@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.auidbook.prototype.SearchDonarFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/search_container_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/transparent_white"
+        card_view:cardElevation="4dp"
+        card_view:contentPadding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linear_serach_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/searchbox"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txt_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/noborder"
+                    android:hint="search"
+                    android:padding="10dp" />
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_search_icon" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/img_bloodGroupFilter"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_filter_icon" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/donor_serach_recylerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_container_card"
+        android:layout_margin="5dp" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_empty_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/donor_serach_recylerview"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/transparent_white"
+        card_view:cardElevation="4dp"
+        card_view:contentPadding="10dp">
+
+        <TextView
+            android:id="@+id/txt_recycler_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No results Found" />
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout><!--android:background="@drawable/searchbox"-->

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:weightSum="1">
+
+  <!-- <com.auidbook.prototype.UIModel.PlayGifView
+       android:id="@+id/play_gifview"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent" />-->
+    <LinearLayout
+        android:layout_width="318dp"
+        android:layout_height="493dp"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/red1">
+        <ImageView
+
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:id="@+id/img_green_tick"
+            android:src="@drawable/green_check_mark"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Request Sent"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:padding="10dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Organizer Will contact You Soon"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:padding="10dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/blood_quote1"
+            android:layout_weight="0.23"
+            />
+    </LinearLayout>
+
+   </RelativeLayout>

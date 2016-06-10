@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".RegisterActivity">
+
+
+    <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bloodGroup2"
+        android:layout_marginTop="81dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <AutoCompleteTextView android:id="@+id/blood2" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Blood Group"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameRegister2"
+        android:layout_below="@+id/bloodGroup2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <AutoCompleteTextView android:id="@+id/name2" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Name"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:id="@+id/crk6"
+        android:src="@drawable/crklogo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Gender:"
+        android:id="@+id/gender6"
+        android:layout_below="@+id/homeLoc2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="56dp" />
+
+    <RadioGroup
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:id="@+id/radioGroup2"
+        android:layout_alignTop="@+id/gender6"
+        android:layout_alignRight="@+id/homeLoc2"
+        android:layout_alignEnd="@+id/homeLoc2">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/radioButton4"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/radioButton3"
+            android:checked="false"
+            android:layout_alignTop="@+id/radioButton"
+            android:layout_toRightOf="@+id/crk6"
+            android:layout_toEndOf="@+id/crk6" />
+    </RadioGroup>
+
+
+    <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/homeLoc2"
+        android:layout_below="@+id/nameRegister2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <AutoCompleteTextView android:id="@+id/homeLocation2" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Home Location"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/workLoc2"
+        android:layout_below="@+id/crk6"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <AutoCompleteTextView android:id="@+id/workLocation2" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="Work Location"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mobnum2"
+            android:layout_below="@+id/radioGroup2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <AutoCompleteTextView android:id="@+id/MobileNum2" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Mobile Number"
+                android:inputType="number" android:maxLines="1"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    <Button
+        style="?android:textAppearanceSmall"
+        android:id="@+id/updateProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:bottomRightRadius="10dp"
+        android:bottomLeftRadius="10dp"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp"
+        android:background="@drawable/mybutton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

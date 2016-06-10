@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_fragment"
+            android:title="@string/home"
+            android:checked="true"
+            />
+        <item
+            android:id="@+id/create_request_fragment"
+            android:title="@string/request"
+            />
+        <item
+            android:id="@+id/current_request_fragment"
+            android:title="@string/current"
+            />
+        <item
+            android:id="@+id/view_response_fragment"
+            android:title="@string/response"
+            />
+        <item
+            android:id="@+id/view_donors_fragment"
+            android:title="@string/donors"
+            />
+        <item
+            android:id="@+id/update_profile_fragment"
+            android:title="@string/updateprofile"
+            />
+        <item
+            android:id="@+id/helpandfeedback"
+            android:title="@string/feedback"
+            />
+        <item
+            android:id="@+id/donarLocation"
+            android:title="@string/locateDonar"
+            />
+    </group>
+</menu>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.auidbook.prototype.UIModel.RoundedImageView
+        android:id="@+id/image_user"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="15dp"
+        android:transitionName="DP_IMAGE"/>
+
+
+    <LinearLayout
+        android:id="@+id/linear_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:paddingTop="3dp"
+        android:layout_weight="60"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/txt_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9566824544"
+            android:textColorHighlight="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chennai"
+            android:textColorHighlight="@color/colorPrimaryDark" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_blood_group"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_gravity="left"
+        android:src="@drawable/user" />
+
+</LinearLayout>
