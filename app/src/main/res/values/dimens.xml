@@ -10,4 +10,8 @@
 
     <dimen name="thumbnail_size">72dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="hp_textsize">20dp</dimen>
+
+    <dimen name="itemPadding">25dp</dimen>itemPadding
 </resources>

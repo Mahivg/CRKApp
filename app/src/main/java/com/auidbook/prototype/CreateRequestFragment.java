@@ -9,10 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auidbook.prototype.Model.BloodRequest;
@@ -20,6 +24,7 @@ import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.UIModel.DatePickerFragment;
+//import com.wefika.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,11 +36,11 @@ import java.util.Random;
  */
 public class CreateRequestFragment extends Fragment implements View.OnClickListener {
 
+    private static final int REQUEST_DATE = 0;
     private View v;
     private EditText edtPatientName;
     private RadioGroup rgpGender;
     private EditText edtBloodGroup;
-    private SeekBar skbUnitsRequired;
     private EditText edtDonationDate;
     private EditText edtMobileNumber;
     private EditText edtAltMobileNumber;
@@ -43,13 +48,13 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
     private EditText edtAddressLine2;
     private EditText edtAddressLine3;
     private Button btnSubmit;
-
+   // private HorizontalPicker hp_units;
+    private NumberPicker np_units;
+    private CheckBox mCheckHalfUnits;
     private CRKApp crkApp;
     private DonorHelper donorHelper;
     private Date mDate;
-    private static final int REQUEST_DATE = 0;
-
-
+    private double mUnitsRequired;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,10 +62,7 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         // Inflate the layout for this fragment
         v =  inflater.inflate(R.layout.fragment_create_request, container, false);
         initViews();
-
         btnSubmit.setOnClickListener(this);
-
-
         return v;
     }
 
@@ -73,7 +75,11 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         edtPatientName = (EditText) v.findViewById(R.id.edt_patient_name);
         rgpGender = (RadioGroup) v.findViewById(R.id.rgpGender);
         edtBloodGroup = (EditText) v.findViewById(R.id.edt_blood_group);
-        skbUnitsRequired = (SeekBar) v.findViewById(R.id.skbUnitsRequired);
+
+        //hp_units = (HorizontalPicker) v.findViewById(R.id.hp_units);
+        np_units = (NumberPicker) v.findViewById(R.id.numberPicker);
+        mCheckHalfUnits = (CheckBox) v.findViewById(R.id.chkHalfunits);
+        //txtseekunits = (TextView) v.findViewById(R.id.txtseekunits);
         edtDonationDate = (EditText) v.findViewById(R.id.edt_date_of_donation);
         edtMobileNumber = (EditText) v.findViewById(R.id.edt_mobile_number);
         edtAltMobileNumber = (EditText) v.findViewById(R.id.edt_alt_mobile_number);
@@ -81,29 +87,41 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         edtAddressLine2 = (EditText) v.findViewById(R.id.edt_addressline2);
         edtAddressLine3 = (EditText) v.findViewById(R.id.edt_addressline3);
         btnSubmit = (Button) v.findViewById(R.id.btnSubmitRequest);
+        /*final String[] values = {"1","1.5","2","2.5","3","3.5","4","4.5","5"};
 
-        skbUnitsRequired.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        hp_units.setValues(values);
+
+        hp_units.setOnItemClickedListener(new HorizontalPicker.OnItemClicked() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            public void onItemClicked(int index) {
 
-                seekBar.setProgress(progress);
+                Toast.makeText(getActivity(), "Units : " + values[index], Toast.LENGTH_SHORT).show();
             }
+        });*/
 
+
+        np_units.setMinValue(1);
+        np_units.setMaxValue(100);
+        np_units.setValue(2);
+
+        np_units.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-                Toast.makeText(getContext(),seekBar.getProgress()*0.5+"",Toast.LENGTH_SHORT).show();
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                mUnitsRequired = newVal;
             }
         });
 
-        edtDonationDate.setOnClickListener(this);
+        mCheckHalfUnits.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-    }
+                if(isChecked){
+                    mUnitsRequired = mUnitsRequired+0.5;
+                }
+            }
+        });
+
+        edtDonationDate.setOnClickListener(this);    }
 
     // TODO: Rename method, update argument and hook method into UI event
 
@@ -142,13 +160,11 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         String patientName = edtPatientName.getText().toString();
         String gender = getGenderFromRadioButton();
         String bloodGroup = edtBloodGroup.getText().toString();
-        double unitsRequired = skbUnitsRequired.getProgress()*0.5;
         String mobileNumber = edtMobileNumber.getText().toString();
         String altMobNumber = edtAltMobileNumber.getText().toString();
         String addressLine1 = edtAddressLine1.getText().toString();
         String addressLine2 = edtAddressLine2.getText().toString();
         String addressLine3 = edtAddressLine3.getText().toString();
-
         ArrayList<String> mobileArray = new ArrayList<String>();
         mobileArray.add(mobileNumber);
         mobileArray.add(altMobNumber);
@@ -156,7 +172,7 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         Address hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");
 
 
-        BloodRequest request = new BloodRequest("",patientName,gender,bloodGroup,unitsRequired,hospitalAddress,"Accident",mobileArray,mDate,null,"Pending",crkApp.getDonor().getDonorID());
+        BloodRequest request = new BloodRequest("",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,"Accident",mobileArray,mDate,null,"Pending",crkApp.getDonor().getDonorID());
 
         donorHelper.getAllBloodRequest().add(request);
 
