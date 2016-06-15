@@ -24,20 +24,22 @@ import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Rawoof on 5/8/2016.
  */
 public class ResponseFragment extends Fragment {
 
+    private final String DATA_POSITION = "mPosition";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<BloodRequest> requestList;
+    private List<BloodRequest> requestList;
     private CRKApp crkApp;
     private DonorHelper donorHelper;
     private DataStore dataStore;
-    private final String DATA_POSITION = "mPosition";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,9 +79,9 @@ public class ResponseFragment extends Fragment {
 
     public class ResponseAdapter extends RecyclerView.Adapter<ResponseAdapter.MyViewHolder>{
 
-        private ArrayList<BloodRequest> requestBloodList;
+        private List<BloodRequest> requestBloodList;
         private int mPosition;
-        public ResponseAdapter(ArrayList<BloodRequest> requestList) {
+        public ResponseAdapter(List<BloodRequest> requestList) {
 
             this.requestBloodList = requestList;
         }

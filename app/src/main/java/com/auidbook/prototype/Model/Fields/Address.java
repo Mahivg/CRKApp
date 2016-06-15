@@ -1,20 +1,43 @@
 package com.auidbook.prototype.Model.Fields;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by mgundappan on 21-05-2016.
  */
 public class Address {
 
+    @JsonProperty("AddressType")
     public String addressType;
+
+    @JsonProperty("AddressLine1")
     public String addressLine1;
+
+    @JsonProperty("AddressLine2")
     public String addressLine2;
+
+    @JsonProperty("AddressLine3")
     public String addressLine3;
+
+    @JsonProperty("City")
     public String city;
+
+    @JsonProperty("State")
     public String state;
+
+    @JsonProperty("Country")
     public String country;
+
+    @JsonProperty("ZipCode")
     public String zipCode;
+
+    @JsonProperty("Latitude")
     public String latitude;
+
+    @JsonProperty("Longitude")
     public String longitude;
+
+    @JsonProperty("PrivacyStatus")
     public String privacyStatus;
 
     public Address() {

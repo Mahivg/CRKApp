@@ -3,7 +3,9 @@ package com.auidbook.prototype;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,16 +14,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.Model.BloodRequest;
+import com.auidbook.prototype.UIModel.PagerAdapter;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Rawoof on 5/8/2016.
@@ -36,8 +39,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<BloodRequest> productList;
-
+    private List<BloodRequest> bloodList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,15 +53,17 @@ public class HomeFragment extends Fragment {
 
         donorHelper = crkApp.getDonorHelper();
 
+        //System.out.println("BloodList Size :  "+donorHelper.getAllBloodRequest().size());
+
         dataStore = DataStore.getDataStore(getActivity());
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.bloodrequest_recycler_view);
 
         mRecyclerView.setHasFixedSize(true);
 
-        productList = donorHelper.getApprovedBloodRequestList();
+        bloodList = donorHelper.getApprovedBloodRequestList();
 
-        mAdapter = new MyCardViewAdapter(productList);
+        mAdapter = new MyCardViewAdapter(bloodList);
 
         mLayoutManager = new LinearLayoutManager(getContext());
 
@@ -87,10 +91,10 @@ public class HomeFragment extends Fragment {
 
     public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.MyViewHolder>{
 
-        private ArrayList<BloodRequest> bloodRequestList;
+        private List<BloodRequest> bloodRequestList;
         private int mPosition;
 
-        public MyCardViewAdapter(ArrayList<BloodRequest> bloodRequestList) {
+        public MyCardViewAdapter(List<BloodRequest> bloodRequestList) {
 
             this.bloodRequestList = bloodRequestList;
         }
@@ -128,7 +132,6 @@ public class HomeFragment extends Fragment {
 
                     donor.setIsRequestAccepted(true);
                     donorHelper.getDonorByUserName(donor.getMobileNumber()).setIsRequestAccepted(true);
-
 
                     getActivity().finish();
                     startActivity(getActivity().getIntent());

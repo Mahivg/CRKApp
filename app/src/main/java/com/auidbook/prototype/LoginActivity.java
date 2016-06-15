@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -16,20 +17,25 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.SessionManager;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
+import com.auidbook.prototype.handler.BloodRequestHandler;
+import com.auidbook.prototype.listener.ICommunicator;
 
 import java.security.DomainCombiner;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Rawoof on 3/27/2016.
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener,ICommunicator {
 
     private DonorHelper donorHelper;
+    private BloodRequestHandler bloodRequestHandler;
     private CRKApp crkApp;
     private SessionManager sessionManager;
     private EditText edtMobileNumber;
@@ -39,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Switch switchKMLI;
     private boolean isLoggedIn;
     private boolean isRemembered;
+    private Boolean exit = false;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -47,12 +54,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         crkApp = (CRKApp) getApplicationContext();
-        if(crkApp.getDonorHelper() == null) {
-            donorHelper = new DonorHelper();
-            crkApp.setDonorHelper(donorHelper);
-        }
 
-        donorHelper = crkApp.getDonorHelper();
+        donorHelper = new DonorHelper();
+
+        bloodRequestHandler = new BloodRequestHandler(this, this);
 
         sessionManager = new SessionManager(getApplicationContext());
         isRemembered = sessionManager.isLoggedIn();
@@ -114,7 +119,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             sessionManager.createLoginSession(userName, password);
                         }
                         crkApp.setDonor(donorHelper.getDonorByUserName(userName));
-
+                        crkApp.setDonorHelper(donorHelper);
+                       // bloodRequestHandler.getAllBloodRequset();
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                     } else {
@@ -132,7 +138,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private Boolean exit = false;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBackPressed() {
@@ -158,5 +163,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         //crkApp.setDonorHelper(donorHelper);
+    }
+
+    @Override
+    public List<BloodRequest> getBloodRequset() {
+        Log.i("Login Activity", "getBloodRequestCalled");
+        return donorHelper.getAllBloodRequest();
+    }
+
+    @Override
+    public void setBloodRequset(List<BloodRequest> requestBloodList) {
+        Log.i("Login Activity", "setBloodRequestCalled");
+        donorHelper.setAllBloodRequest(requestBloodList);
+        crkApp.setDonorHelper(donorHelper);
+        Intent i = new Intent(this,MainActivity.class);
+        startActivity(i);
+
     }
 }

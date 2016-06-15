@@ -33,12 +33,13 @@ import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.DividerLineItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DonorRespondedActivity extends AppCompatActivity {
+    private final String DATA_POSITION = "mPosition";
     private CRKApp crkApp;
     private DonorHelper donorHelper;
-    private ArrayList<Donor> respondedDonorList;
-    private final String DATA_POSITION = "mPosition";
+    private List<Donor> respondedDonorList;
     private Toolbar mToolBar;
     private RecyclerView mRecyclerView;
     private DonorResponsedViewAdapter mAdapter;
@@ -200,10 +201,10 @@ public class DonorRespondedActivity extends AppCompatActivity {
 
     public class DonorResponsedViewAdapter extends RecyclerView.Adapter<DonorResponsedViewAdapter.MyViewHolder>{
 
-        private ArrayList<Donor> respondedDonorList;
+        private List<Donor> respondedDonorList;
         private int mPosition;
 
-        public DonorResponsedViewAdapter(ArrayList<Donor> respondedDonorList) {
+        public DonorResponsedViewAdapter(List<Donor> respondedDonorList) {
 
             this.respondedDonorList = respondedDonorList;
         }

@@ -1,10 +1,15 @@
 package com.auidbook.prototype.Model;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.Model.Fields.User;
+import com.auidbook.prototype.enums.RequestState;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by mgundappan on 18-05-2016.
@@ -12,22 +17,39 @@ import java.util.Date;
 public class DonorHelper {
 
     private static Donor donor;
+    CRKApp crkApp;
     //private static DonorHelper donorHelper;
-    private ArrayList<Donor> donorList;
-    private ArrayList<User> userList;
-    private ArrayList<BloodRequest> bloodRequestList;
+    private List<Donor> donorList;
+    private List<User> userList;
+    private List<BloodRequest> bloodRequestList;
+    private Context mContext;
 
     public DonorHelper() {
+        userList = getAllUser();
+        donorList = setAllDonor();
+    }
+
+    public DonorHelper(Context context) {
 
         //bloodRequestList = setAllBloodRequest();
-        donorList = setAllDonor();
         userList = getAllUser();
+        donorList = setAllDonor();
+        mContext = context;
+        crkApp = (CRKApp) mContext;
 
     }
 
-    public ArrayList<BloodRequest> getAllBloodRequest() {
+    public List<BloodRequest> getAllBloodRequest() {
         return bloodRequestList;
     }
+
+    public void setAllBloodRequest(List<BloodRequest> bloodRequestList) {
+        Log.i("DonorHelper", "setAllBloodRequestCalled");
+        this.bloodRequestList = bloodRequestList;
+
+    }
+
+
 
 
 
@@ -61,10 +83,10 @@ public class DonorHelper {
         phoneList.add("9566824544");
         phoneList.add("9941762630");
 
-        BloodRequest requestBlood1 = new BloodRequest("Req001","Mohan","Male","A+ve",4.5,address1,"Accident",phoneList,new Date(),new ArrayList<Donor>(),"Pending","Donor001");
-        BloodRequest requestBlood2 = new BloodRequest("Req002","Vignesh","Male","O+ve",4.5,address2,"Accident",phoneList,new Date(),new ArrayList<Donor>(),"Approved","Donor001");
-        BloodRequest requestBlood3 = new BloodRequest("Req003","Raja","Male","A+ve",4.5,address1,"Accident",phoneList,new Date(),new ArrayList<Donor>(),"Pending","Donor001");
-        BloodRequest requestBlood4 = new BloodRequest("Req004","Prakash","Male","O+ve",4.5,address2,"Accident",phoneList,new Date(),new ArrayList<Donor>(),"Approved","Donor001");
+        BloodRequest requestBlood1 = new BloodRequest("","Req001","Mohan","Male","A+ve",4.5,address1,"Accident",phoneList,new Date(),new ArrayList<Donor>(), RequestState.Pending,"Donor001");
+        BloodRequest requestBlood2 = new BloodRequest("","Req002","Vignesh","Male","O+ve",4.5,address2,"Accident",phoneList,new Date(),new ArrayList<Donor>(),RequestState.Approved,"Donor001");
+        BloodRequest requestBlood3 = new BloodRequest("","Req003","Raja","Male","A+ve",4.5,address1,"Accident",phoneList,new Date(),new ArrayList<Donor>(),RequestState.Pending,"Donor001");
+        BloodRequest requestBlood4 = new BloodRequest("","Req004","Prakash","Male","O+ve",4.5,address2,"Accident",phoneList,new Date(),new ArrayList<Donor>(),RequestState.Approved,"Donor001");
 
         ArrayList<BloodRequest> listRequest = new ArrayList<BloodRequest>();
         listRequest.add(requestBlood1);
@@ -95,13 +117,8 @@ public class DonorHelper {
         }
         return donorList;
     }
-    public ArrayList<Donor> getAllDonor(){
+    public List<Donor> getAllDonor(){
         return donorList;
-    }
-
-    public void setDonor(Donor donor){
-
-        DonorHelper.donor  = donor;
     }
 
     public Donor getDonor(){
@@ -111,13 +128,18 @@ public class DonorHelper {
         return DonorHelper.donor;
     }
 
+    public void setDonor(Donor donor){
+
+        DonorHelper.donor  = donor;
+    }
+
     public ArrayList<BloodRequest> getPendingBloodRequestList(){
 
         ArrayList<BloodRequest> pendingRequest = new ArrayList<BloodRequest>();
 
         for (BloodRequest request:bloodRequestList) {
 
-            if(request.getRequestStatus().equals("Pending")){
+            if(request.getRequestStatus().ordinal() == RequestState.Pending.ordinal()){
 
                 pendingRequest.add(request);
             }
@@ -131,7 +153,7 @@ public class DonorHelper {
 
         for (BloodRequest request:bloodRequestList) {
 
-            if(request.getRequestStatus().equals("Approved")){
+            if(request.getRequestStatus().ordinal() == RequestState.Approved.ordinal()){
 
                 pendingRequest.add(request);
             }

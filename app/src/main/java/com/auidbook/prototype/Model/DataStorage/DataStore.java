@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by njagadeesan on 14-05-2016.
@@ -19,12 +20,15 @@ import java.util.HashMap;
 public class DataStore {
 
     private static DataStore storeInstance = null;
-    private static ArrayList<Donor> donorArrayList = null;
-    private static ArrayList<String> phoneNumbers = null;
-    private HashMap<Marker, Donor> markerPointer;
+    private static List<Donor> donorArrayList = null;
+    private static List<String> phoneNumbers = null;
     private static Context _context;
-    private MapViewFragment mapViewFragment;
     private static DonorHelper donorHelper = new DonorHelper();
+    private HashMap<Marker, Donor> markerPointer;
+    private MapViewFragment mapViewFragment;
+
+    private DataStore() {
+    }
 
     public static DataStore getDataStore(Context ctx) {
         if (storeInstance == null) {
@@ -35,9 +39,12 @@ public class DataStore {
         return storeInstance;
     }
 
-    private DataStore() {
-    }
+    public static String[] getBloodArray(){
 
+        String[] bloodNames = {"A-ve","A+ve","AB-ve","AB+ve","B-ve","B+ve","O-ve","O+ve"};
+
+        return bloodNames;
+    }
 
     public void setUpEventSpots() {
         mapViewFragment = new MapViewFragment();
@@ -51,13 +58,6 @@ public class DataStore {
         }
         System.out.println("Map Frag,ment Reference  ###########  " + mapViewFragment);
 
-    }
-
-    public static String[] getBloodArray(){
-
-        String[] bloodNames = {"A-ve","A+ve","AB-ve","AB+ve","B-ve","B+ve","O-ve","O+ve"};
-
-        return bloodNames;
     }
 
     public InputStream getBloodImageInputStream(String bloodGroup) {

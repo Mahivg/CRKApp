@@ -1,6 +1,7 @@
 package com.auidbook.prototype;
 
 import android.app.AlertDialog;
+import android.app.backup.BackupHelper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,14 +22,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.SessionManager;
 import com.auidbook.prototype.Model.Donor;
+import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.Map.IMap;
 import com.auidbook.prototype.UIModel.Map.MapContainerFragment;
 import com.auidbook.prototype.UIModel.Map.MapViewFragment;
+import com.auidbook.prototype.handler.BloodRequestHandler;
+import com.auidbook.prototype.listener.ICommunicator;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMap {
 
@@ -36,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String SELECTED_POSITION = "selectedPosition";
 
     private CRKApp crkApp;
+    private DonorHelper donorHelper;
+    private BloodRequestHandler bloodRequestHandler;
     private Donor userLogged;
     private SessionManager sessionManager;
     private int mCurrentNavPosition;
@@ -48,6 +58,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView txt_lastDonated;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println(" On Start mainActivity Called ");
+
+
+        if(userLogged.isRequestAccepted()){
+            replaceNavigationFragment(new AcceptDonationFragment());
+        }
+        else{
+            replaceNavigationFragment( new StartFragment());
+        }
+        getSupportActionBar().setTitle("Home");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -56,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         crkApp = (CRKApp) getApplicationContext();
 
+        donorHelper = crkApp.getDonorHelper();
+
         userLogged = crkApp.getDonor();
 
         sessionManager = new SessionManager(this);
@@ -63,19 +90,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         System.out.println(" Logged User Name : " + userLogged.getDonorName());
 
         System.out.println("OnCreate UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
-        if(userLogged.isRequestAccepted()){
-            replaceNavigationFragment(new AcceptDonationFragment());
-        }
-        else{
-            replaceNavigationFragment( new HomeFragment());
-        }
-        getSupportActionBar().setTitle("Home");
-      /*  fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.container_fragment_layout, new HomeFragment());
-        fragmentTransaction.commit();
-       */
 
-        // Enable opening of drawer
+        intNavDrawer();
+    }
+
+    private void intNavDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,8 +138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerLayout.closeDrawers();
         mDrawerToggle.syncState();
-    }
 
+    }
 
 
     @Override
@@ -134,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     replaceNavigationFragment(new AcceptDonationFragment());
                 }
                 else{
-                    replaceNavigationFragment(new HomeFragment());
+                    replaceNavigationFragment(new StartFragment());
                 }
                 getSupportActionBar().setTitle("Home");
                 mCurrentNavPosition = 0;
@@ -265,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     replaceNavigationFragment(new AcceptDonationFragment());
                 }
                 else{
-                    replaceNavigationFragment(new HomeFragment());
+                    replaceNavigationFragment(new StartFragment());
                 }
                 getSupportActionBar().setTitle("Home");
             }
@@ -302,5 +321,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        }
 
     }
+
 
 }

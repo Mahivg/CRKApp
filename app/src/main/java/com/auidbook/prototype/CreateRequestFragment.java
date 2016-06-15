@@ -24,6 +24,7 @@ import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.UIModel.DatePickerFragment;
+import com.auidbook.prototype.enums.RequestState;
 //import com.wefika.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
@@ -172,7 +173,7 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         Address hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");
 
 
-        BloodRequest request = new BloodRequest("",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,"Accident",mobileArray,mDate,null,"Pending",crkApp.getDonor().getDonorID());
+        BloodRequest request = new BloodRequest("","",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,"Accident",mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
 
         donorHelper.getAllBloodRequest().add(request);
 

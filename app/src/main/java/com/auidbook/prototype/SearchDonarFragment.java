@@ -38,6 +38,7 @@ import com.auidbook.prototype.UIModel.DividerLineItemDecoration;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -51,25 +52,22 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    AlertDialog alertSelectBlood;
+    String bloodSelected = "";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private DataStore dataStore;
-
     private RecyclerView mRecyclerView;
     private DonorSearchViewAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private CardView ifRecycleEmpty;
-    private ArrayList<Donor> donorList;
+    private List<Donor> donorList;
     private ArrayList<Donor> filteredDonorList = new ArrayList<Donor>();
     private EditText txt_search;
     private DonorHelper donorHelper = new DonorHelper();
     private ImageView img_icon_filterByBlood;
     private GridView alertGrid;
-    AlertDialog alertSelectBlood;
-    String bloodSelected = "";
 
 
     public SearchDonarFragment() {

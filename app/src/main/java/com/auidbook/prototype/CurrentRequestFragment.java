@@ -18,6 +18,7 @@ import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Rawoof on 5/8/2016.
@@ -28,7 +29,7 @@ public class CurrentRequestFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<BloodRequest> pendingBloodRequestList;
+    private List<BloodRequest> pendingBloodRequestList;
     private DonorHelper donorHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,10 +71,10 @@ public class CurrentRequestFragment extends Fragment {
 
     public class CurrentRequestAdapter extends RecyclerView.Adapter<CurrentRequestAdapter.MyViewHolder>{
 
-        private ArrayList<BloodRequest> requestBloodList;
+        private List<BloodRequest> requestBloodList;
 
         // private ICommunicator communicator;
-        public CurrentRequestAdapter(ArrayList<BloodRequest> pendingBloodRequestList) {
+        public CurrentRequestAdapter(List<BloodRequest> pendingBloodRequestList) {
 
             this.requestBloodList = pendingBloodRequestList;
             //this.communicator = communicator;

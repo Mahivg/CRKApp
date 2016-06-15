@@ -1,6 +1,8 @@
 package com.auidbook.prototype.Model;
 
 import com.auidbook.prototype.Model.Fields.Address;
+import com.auidbook.prototype.enums.RequestState;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,34 +12,50 @@ import java.util.Date;
  */
 public class BloodRequest {
 
+    @JsonProperty("Id")
+    public String id;
+
+    @JsonProperty("RequestId")
     public String requestId;
 
+    @JsonProperty("PatientName")
     public String patientName;
 
+    @JsonProperty("Gender")
     public String gender;
 
+    @JsonProperty("BloodGroup")
     public String bloodGroup;
 
+    @JsonProperty("NoOfUnitsRequired")
     public double noOfUnitsRrequired;
 
+    @JsonProperty("Location")
     public Address donateLocation;
 
+    @JsonProperty("Reason")
     public String reason;
 
+    @JsonProperty("ContactNumbers")
     public ArrayList<String> contactNumbers;
 
+    @JsonProperty("DateOfDonation")
     public Date dateOfDonation;
 
+    @JsonProperty("RespondedDonors")
     public ArrayList<Donor> donorResponsed;
 
-    public String requestStatus;
+    @JsonProperty("RequestStatus")
+    public RequestState requestStatus;
 
+    @JsonProperty("RequestedDonorId")
     public String requestedDonorId;
 
     public BloodRequest() {
     }
 
-    public BloodRequest(String requestId, String patientName, String gender, String bloodGroup, double noOfUnitsRrequired, Address donateLocation, String reason,ArrayList<String> contactNumbers, Date dateOfDonation, ArrayList<Donor> donorResponsed, String requestStatus, String requestedDonorId) {
+    public BloodRequest(String id, String requestId, String patientName, String gender, String bloodGroup, double noOfUnitsRrequired, Address donateLocation, String reason, ArrayList<String> contactNumbers, Date dateOfDonation, ArrayList<Donor> donorResponsed, RequestState requestStatus, String requestedDonorId) {
+        this.id = id;
         this.requestId = requestId;
         this.patientName = patientName;
         this.gender = gender;
@@ -47,10 +65,17 @@ public class BloodRequest {
         this.reason = reason;
         this.contactNumbers = contactNumbers;
         this.dateOfDonation = dateOfDonation;
-        this.donorResponsed = new ArrayList<Donor>();
+        this.donorResponsed = donorResponsed;
         this.requestStatus = requestStatus;
         this.requestedDonorId = requestedDonorId;
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getRequestId() {
@@ -133,11 +158,11 @@ public class BloodRequest {
         this.donorResponsed = donorResponsed;
     }
 
-    public String getRequestStatus() {
+    public RequestState getRequestStatus() {
         return requestStatus;
     }
 
-    public void setRequestStatus(String requestStatus) {
+    public void setRequestStatus(RequestState requestStatus) {
         this.requestStatus = requestStatus;
     }
 
