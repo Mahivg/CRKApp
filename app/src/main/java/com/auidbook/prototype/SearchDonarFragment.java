@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -63,7 +64,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     private RecyclerView.LayoutManager mLayoutManager;
     private CardView ifRecycleEmpty;
     private List<Donor> donorList;
-    private ArrayList<Donor> filteredDonorList = new ArrayList<Donor>();
+    private List<Donor> filteredDonorList;
     private EditText txt_search;
     private DonorHelper donorHelper = new DonorHelper();
     private ImageView img_icon_filterByBlood;
@@ -237,10 +238,10 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
     public class DonorSearchViewAdapter extends RecyclerView.Adapter<DonorSearchViewAdapter.MyViewHolder> implements Filterable {
 
-        private ArrayList<Donor> donorObjectList;
+        private List<Donor> donorObjectList;
         private CustomFilter mFilter;
 
-        public DonorSearchViewAdapter(ArrayList<Donor> donorObjectList) {
+        public DonorSearchViewAdapter(List<Donor> donorObjectList) {
 
             this.donorObjectList = donorObjectList;
             mFilter = new CustomFilter(DonorSearchViewAdapter.this);
@@ -273,6 +274,42 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
             holder.image_blood_group.setImageBitmap(bitmap);
+
+            holder.v.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                    View alertView = inflater.inflate(R.layout.alert_serachdonor_longclick,null,false);
+
+                    Button btn = (Button) alertView.findViewById(R.id.btnAddToRequest);
+
+                    btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                        }
+                    });
+
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setView(alertView);
+/*
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });*/
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -294,11 +331,13 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
             private TextView txt_phone_number;
             private TextView txt_address;
             private ImageView image_blood_group;
+            private View v;
 
 
             public MyViewHolder(View itemView) {
                 super(itemView);
 
+                this.v = itemView;
                 itemView.setOnClickListener(this);
 
                 txt_name = (TextView) itemView.findViewById(R.id.txt_name);
