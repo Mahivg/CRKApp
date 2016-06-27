@@ -133,9 +133,9 @@ public class DonorHelper {
         DonorHelper.donor  = donor;
     }
 
-    public ArrayList<BloodRequest> getPendingBloodRequestList(){
+    public List<BloodRequest> getPendingBloodRequestList(){
 
-        ArrayList<BloodRequest> pendingRequest = new ArrayList<BloodRequest>();
+        List<BloodRequest> pendingRequest = new ArrayList<BloodRequest>();
 
         for (BloodRequest request:bloodRequestList) {
 
@@ -147,9 +147,9 @@ public class DonorHelper {
         return  pendingRequest;
     }
 
-    public ArrayList<BloodRequest> getApprovedBloodRequestList(){
+    public List<BloodRequest> getApprovedBloodRequestList(){
 
-        ArrayList<BloodRequest> pendingRequest = new ArrayList<BloodRequest>();
+        List<BloodRequest> pendingRequest = new ArrayList<BloodRequest>();
 
         for (BloodRequest request:bloodRequestList) {
 

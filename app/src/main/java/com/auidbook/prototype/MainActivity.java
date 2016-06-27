@@ -63,13 +63,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         System.out.println(" On Start mainActivity Called ");
 
 
-        if(userLogged.isRequestAccepted()){
+       /* if(userLogged.isRequestAccepted()){
             replaceNavigationFragment(new AcceptDonationFragment());
         }
         else{
             replaceNavigationFragment( new StartFragment());
         }
-        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setTitle("Home");*/
     }
 
     @Override
@@ -92,6 +92,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         System.out.println("OnCreate UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
 
         intNavDrawer();
+
+        if(userLogged.isRequestAccepted()){
+            replaceNavigationFragment(new AcceptDonationFragment());
+        }
+        else{
+            replaceNavigationFragment( new StartFragment());
+        }
+        getSupportActionBar().setTitle("Home");
     }
 
     private void intNavDrawer() {

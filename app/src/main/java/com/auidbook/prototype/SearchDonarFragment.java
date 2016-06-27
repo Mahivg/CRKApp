@@ -1,8 +1,10 @@
 package com.auidbook.prototype;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -17,6 +19,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -29,12 +34,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.AlertImageAdapter;
 import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
 import com.auidbook.prototype.UIModel.DialogImageFragment;
+import com.auidbook.prototype.UIModel.DialogRecyclerFragment;
 import com.auidbook.prototype.UIModel.DividerLineItemDecoration;
 
 import java.io.InputStream;
@@ -53,8 +60,13 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int SET_DONOR_CODE = 3;
     AlertDialog alertSelectBlood;
     String bloodSelected = "";
+
+    private CRKApp crkApp;
+    private DonorHelper donorHelper;
+    private Donor donorOnLongClick;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -64,11 +76,11 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     private RecyclerView.LayoutManager mLayoutManager;
     private CardView ifRecycleEmpty;
     private List<Donor> donorList;
-    private List<Donor> filteredDonorList;
+    private List<Donor> filteredDonorList = new ArrayList<Donor>();
     private EditText txt_search;
-    private DonorHelper donorHelper = new DonorHelper();
     private ImageView img_icon_filterByBlood;
     private GridView alertGrid;
+    private AlertDialog alertSelectRequest;
 
 
     public SearchDonarFragment() {
@@ -78,6 +90,10 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        crkApp = (CRKApp) getActivity().getApplicationContext();
+
+        donorHelper = crkApp.getDonorHelper();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -142,6 +158,8 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
         });
 
         bloodSelected = "";
+
+        setHasOptionsMenu(true);
         return v;
     }
 
@@ -160,6 +178,23 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_search_donor, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_filter){
+
+            Toast.makeText(getContext(),"Filter Apply",Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -235,6 +270,27 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(data==null){
+            return;
+        }
+
+        if(resultCode == Activity.RESULT_OK) {
+            if (requestCode == SET_DONOR_CODE) {
+
+                int pos = data.getIntExtra(DialogRecyclerFragment.REQUEST_POSITION,0);
+                if(donorOnLongClick!= null) {
+                    System.out.println("***** DonorOnLongClick Is Added to List ");
+                    donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
+                }
+                else{
+                    System.out.println("***** DonorOnLongClick Is Null ");
+                }
+            }
+        }
+    }
 
     public class DonorSearchViewAdapter extends RecyclerView.Adapter<DonorSearchViewAdapter.MyViewHolder> implements Filterable {
 
@@ -261,6 +317,8 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
+            final int cPosition = position;
+
             holder.image_user.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.no_profile_pic));
 
             holder.txt_name.setText(donorObjectList.get(position).getDonorName());
@@ -279,6 +337,8 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                 @Override
                 public boolean onLongClick(View v) {
 
+                    donorOnLongClick = donorObjectList.get(cPosition);
+
                     LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
                     View alertView = inflater.inflate(R.layout.alert_serachdonor_longclick,null,false);
@@ -289,11 +349,16 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                         @Override
                         public void onClick(View v) {
 
+                            alertSelectRequest.dismiss();
+
+                            DialogRecyclerFragment dialogRecyclerFragment = DialogRecyclerFragment.newInstance(donorHelper.getApprovedBloodRequestList());
+
+                            dialogRecyclerFragment.setTargetFragment(SearchDonarFragment.this, SET_DONOR_CODE);
+
+                            dialogRecyclerFragment.show(getFragmentManager(),"Show RequestList");
 
                         }
                     });
-
-
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setView(alertView);
@@ -305,8 +370,8 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                         }
                     });*/
 
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    alertSelectRequest = builder.create();
+                    alertSelectRequest.show();
                     return true;
                 }
             });
