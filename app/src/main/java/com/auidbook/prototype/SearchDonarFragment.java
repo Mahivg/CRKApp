@@ -158,7 +158,6 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
         });
 
         bloodSelected = "";
-
         setHasOptionsMenu(true);
         return v;
     }
@@ -284,6 +283,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                 if(donorOnLongClick!= null) {
                     System.out.println("***** DonorOnLongClick Is Added to List ");
                     donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
+                    donorOnLongClick = null;
                 }
                 else{
                     System.out.println("***** DonorOnLongClick Is Null ");
