@@ -25,6 +25,7 @@ import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.UIModel.DatePickerFragment;
 import com.auidbook.prototype.enums.RequestState;
+import com.auidbook.prototype.listener.ICommunicator;
 //import com.wefika.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.Random;
 public class CreateRequestFragment extends Fragment implements View.OnClickListener {
 
     private static final int REQUEST_DATE = 0;
+    private static BloodRequest bloodRequestForEdit;
     private View v;
     private EditText edtPatientName;
     private RadioGroup rgpGender;
@@ -45,6 +47,7 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
     private EditText edtDonationDate;
     private EditText edtMobileNumber;
     private EditText edtAltMobileNumber;
+    private EditText edtReason;
     private EditText edtAddressLine1;
     private EditText edtAddressLine2;
     private EditText edtAddressLine3;
@@ -54,8 +57,29 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
     private CheckBox mCheckHalfUnits;
     private CRKApp crkApp;
     private DonorHelper donorHelper;
+    private ICommunicator communicator;
     private Date mDate;
     private double mUnitsRequired;
+
+    public CreateRequestFragment(){}
+
+    public static CreateRequestFragment newInstance(BloodRequest bloodRequest){
+
+        bloodRequestForEdit = bloodRequest;
+
+        return new CreateRequestFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        crkApp = (CRKApp) getActivity().getApplicationContext();
+
+        donorHelper = crkApp.getDonorHelper();
+
+        communicator = (ICommunicator) getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,15 +87,20 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         // Inflate the layout for this fragment
         v =  inflater.inflate(R.layout.fragment_create_request, container, false);
         initViews();
-        btnSubmit.setOnClickListener(this);
+        if(bloodRequestForEdit!= null){
+
+            System.out.println(" Inside BloodRequestForEdit is Not null");
+            System.out.println(" With Reason : "+ bloodRequestForEdit.getReason());
+            populateBloodData(bloodRequestForEdit);
+
+        }
+
         return v;
     }
 
+
+
     private void initViews() {
-
-        crkApp = (CRKApp) getActivity().getApplicationContext();
-
-        donorHelper = crkApp.getDonorHelper();
 
         edtPatientName = (EditText) v.findViewById(R.id.edt_patient_name);
         rgpGender = (RadioGroup) v.findViewById(R.id.rgpGender);
@@ -84,23 +113,12 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         edtDonationDate = (EditText) v.findViewById(R.id.edt_date_of_donation);
         edtMobileNumber = (EditText) v.findViewById(R.id.edt_mobile_number);
         edtAltMobileNumber = (EditText) v.findViewById(R.id.edt_alt_mobile_number);
+        edtReason = (EditText) v.findViewById(R.id.edt_Reason);
         edtAddressLine1 = (EditText) v.findViewById(R.id.edt_addressline1);
         edtAddressLine2 = (EditText) v.findViewById(R.id.edt_addressline2);
         edtAddressLine3 = (EditText) v.findViewById(R.id.edt_addressline3);
         btnSubmit = (Button) v.findViewById(R.id.btnSubmitRequest);
-        /*final String[] values = {"1","1.5","2","2.5","3","3.5","4","4.5","5"};
-
-        hp_units.setValues(values);
-
-        hp_units.setOnItemClickedListener(new HorizontalPicker.OnItemClicked() {
-            @Override
-            public void onItemClicked(int index) {
-
-                Toast.makeText(getActivity(), "Units : " + values[index], Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
-
+        btnSubmit.setOnClickListener(this);
         np_units.setMinValue(1);
         np_units.setMaxValue(100);
         np_units.setValue(2);
@@ -158,26 +176,87 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
 
     private void submitRequest() {
 
+       /* String patientName;
+        String gender;
+        String bloodGroup;
+        String mobileNumber;
+        String altMobNumber;
+        String addressLine1;
+        String addressLine2;
+        String addressLine3;
+        String reason;*/
+
+        String reqId;
         String patientName = edtPatientName.getText().toString();
         String gender = getGenderFromRadioButton();
         String bloodGroup = edtBloodGroup.getText().toString();
+        mUnitsRequired = np_units.getValue();
+        if(mCheckHalfUnits.isChecked()){
+            mUnitsRequired = mUnitsRequired+ 0.5;
+        }
         String mobileNumber = edtMobileNumber.getText().toString();
         String altMobNumber = edtAltMobileNumber.getText().toString();
+        String reason = edtReason.getText().toString();
         String addressLine1 = edtAddressLine1.getText().toString();
         String addressLine2 = edtAddressLine2.getText().toString();
         String addressLine3 = edtAddressLine3.getText().toString();
         ArrayList<String> mobileArray = new ArrayList<String>();
+        Address hospitalAddress;
+        BloodRequest request;
         mobileArray.add(mobileNumber);
         mobileArray.add(altMobNumber);
+        hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");
+//        request = new BloodRequest("","",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
 
-        Address hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");
+        if(bloodRequestForEdit != null){
 
+      /*      patientName = bloodRequestForEdit.getPatientName();
+            gender = getGenderFromRadioButton();
+            bloodGroup = bloodRequestForEdit.getBloodGroup();
+            mobileNumber = bloodRequestForEdit.getContactNumbers().get(0);
+            altMobNumber = bloodRequestForEdit.getContactNumbers().get(1);
+            reason = bloodRequestForEdit.getReason();
+            addressLine1 = bloodRequestForEdit.getDonateLocation().getAddressLine1();
+            addressLine2 = bloodRequestForEdit.getDonateLocation().getAddressLine2();
+            addressLine3 = bloodRequestForEdit.getDonateLocation().getAddressLine3();
+            mobileArray.add(mobileNumber);
+            mobileArray.add(altMobNumber);*/
 
-        BloodRequest request = new BloodRequest("","",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,"Accident",mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
+            reqId = bloodRequestForEdit.getRequestId();
+            if(mDate == null){
+                mDate = bloodRequestForEdit.getDateOfDonation();
+            }
+            request = new BloodRequest("",reqId,patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,bloodRequestForEdit.getDonorResponsed(), RequestState.Pending,crkApp.getDonor().getDonorID());
 
-        donorHelper.getAllBloodRequest().add(request);
+            donorHelper.updateBloodRequest(request);
+            bloodRequestForEdit = null;
 
-        Toast.makeText(getContext(),"Request Submitted",Toast.LENGTH_SHORT).show();
+            communicator.changeFragment(new ResponseFragment());
+
+            Toast.makeText(getContext(),"Request Edited",Toast.LENGTH_SHORT).show();
+        }
+        else{
+           /* patientName = edtPatientName.getText().toString();
+            gender = getGenderFromRadioButton();
+            bloodGroup = edtBloodGroup.getText().toString();
+            mobileNumber = edtMobileNumber.getText().toString();
+            altMobNumber = edtAltMobileNumber.getText().toString();
+            reason = edtReason.getText().toString();
+            addressLine1 = edtAddressLine1.getText().toString();
+            addressLine2 = edtAddressLine2.getText().toString();
+            addressLine3 = edtAddressLine3.getText().toString();
+            mobileArray.add(mobileNumber);
+            mobileArray.add(altMobNumber);
+
+            hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");*/
+            reqId = "Req" + Math.round(Math.random()*1000);
+
+            request = new BloodRequest("",reqId,patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
+
+            donorHelper.getAllBloodRequest().add(request);
+
+            Toast.makeText(getContext(), "Request Submitted To Add", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -211,6 +290,46 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         String d = day+"-"+month+"-"+year;
         edtDonationDate.setText(d);
+
+    }
+    private void populateBloodData(BloodRequest bloodRequestForEdit) {
+
+        edtPatientName.setText(bloodRequestForEdit.getPatientName());
+        String gender = bloodRequestForEdit.getGender();
+        setRadioButton(gender);
+        double val = bloodRequestForEdit.getNoOfUnitsRrequired()- Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+        if(val != 0){
+            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+                    np_units.setValue(intVal.intValue());
+                    mCheckHalfUnits.setChecked(true);
+        }
+        else{
+            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+            np_units.setValue(intVal.intValue());
+        }
+        setDateText(bloodRequestForEdit.getDateOfDonation());
+        edtBloodGroup.setText(bloodRequestForEdit.getBloodGroup());
+        edtMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(0));
+        edtAltMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(1));
+        edtAddressLine1.setText(bloodRequestForEdit.getDonateLocation().getAddressLine1());
+        edtAddressLine2.setText(bloodRequestForEdit.getDonateLocation().getAddressLine2());
+        edtAddressLine3.setText(bloodRequestForEdit.getDonateLocation().getAddressLine3());
+        edtReason.setText(bloodRequestForEdit.getReason());
+
+    }
+
+    private void setRadioButton(String gender) {
+
+        RadioButton rbnMale = (RadioButton) v.findViewById(R.id.rbnMale);
+        RadioButton rbnFemale = (RadioButton) v.findViewById(R.id.rbnFemale);
+
+        if(gender.equals("Male")){
+
+            rbnMale.setChecked(true);
+        }
+        else {
+            rbnFemale.setChecked(true);
+        }
 
     }
 }

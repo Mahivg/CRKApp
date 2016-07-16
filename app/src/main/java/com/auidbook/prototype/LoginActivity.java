@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -178,6 +179,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         crkApp.setDonorHelper(donorHelper);
         Intent i = new Intent(this,MainActivity.class);
         startActivity(i);
+
+    }
+
+    @Override
+    public void changeFragment(Fragment fragment) {
 
     }
 }

@@ -3,35 +3,43 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home_fragment"
-            android:title="@string/home"
             android:checked="true"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home"
             />
         <item
             android:id="@+id/create_request_fragment"
+            android:icon="@drawable/ic_file_upload_black_24dp"
             android:title="@string/request"
             />
         <item
             android:id="@+id/current_request_fragment"
+            android:icon="@drawable/ic_file_download_black_24dp"
             android:title="@string/current"
             />
         <item
             android:id="@+id/view_response_fragment"
+            android:icon="@drawable/ic_opacity_black_24dp"
             android:title="@string/response"
             />
         <item
             android:id="@+id/view_donors_fragment"
+            android:icon="@drawable/ic_people_black_24dp"
             android:title="@string/donors"
             />
         <item
             android:id="@+id/update_profile_fragment"
+            android:icon="@drawable/ic_create_black_24dp"
             android:title="@string/updateprofile"
             />
         <item
             android:id="@+id/helpandfeedback"
+            android:icon="@drawable/ic_help_black_24dp"
             android:title="@string/feedback"
             />
         <item
             android:id="@+id/donarLocation"
+            android:icon="@drawable/ic_place_black_24dp"
             android:title="@string/locateDonar"
             />
     </group>

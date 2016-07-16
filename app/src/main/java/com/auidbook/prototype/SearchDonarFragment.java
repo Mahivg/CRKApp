@@ -2,6 +2,7 @@ package com.auidbook.prototype;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,12 +35,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
+import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.UIModel.AlertImageAdapter;
 import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
+import com.auidbook.prototype.UIModel.DialogFilterDonor;
 import com.auidbook.prototype.UIModel.DialogImageFragment;
 import com.auidbook.prototype.UIModel.DialogRecyclerFragment;
 import com.auidbook.prototype.UIModel.DividerLineItemDecoration;
@@ -61,6 +65,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final int SET_DONOR_CODE = 3;
+    private static final int APPLY_FILTER = 5;
     AlertDialog alertSelectBlood;
     String bloodSelected = "";
 
@@ -77,10 +82,12 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     private CardView ifRecycleEmpty;
     private List<Donor> donorList;
     private List<Donor> filteredDonorList = new ArrayList<Donor>();
+    private List<Donor> listForFiltering = new ArrayList<Donor>();
     private EditText txt_search;
     private ImageView img_icon_filterByBlood;
     private GridView alertGrid;
     private AlertDialog alertSelectRequest;
+    private int f= 1;
 
 
     public SearchDonarFragment() {
@@ -91,9 +98,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        crkApp = (CRKApp) getActivity().getApplicationContext();
 
-        donorHelper = crkApp.getDonorHelper();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -101,10 +106,33 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        System.out.println("Search donor onAtach called " + f + " time");
+        f= f+1;
+        crkApp = (CRKApp) getActivity().getApplicationContext();
+        dataStore = DataStore.getDataStore(getActivity());
+        donorHelper = crkApp.getDonorHelper();
+        donorList = donorHelper.getAllDonor();
+        filteredDonorList.clear();
+        filteredDonorList.addAll(donorList);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        System.out.println("Search donor oncreate view called "+ f+" time");
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_search_donar, container, false);
+        intiViews(v);
+        bloodSelected = "";
+        setHasOptionsMenu(true);
+        return v;
+    }
+
+    private void intiViews(View v) {
 
         txt_search = (EditText) v.findViewById(R.id.txt_search);
 
@@ -118,12 +146,6 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
         mRecyclerView.setHasFixedSize(true);
 
-        dataStore = DataStore.getDataStore(getActivity());
-
-        donorList = donorHelper.getAllDonor();
-
-        filteredDonorList.addAll(donorList);
-
         mAdapter = new DonorSearchViewAdapter(filteredDonorList);
 
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -136,7 +158,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
         DividerLineItemDecoration dividerLineItemDecoration = new DividerLineItemDecoration(d);
 
-        mRecyclerView.addItemDecoration(new CurrentRequestListDividerItemDecoration(Color.RED));
+        mRecyclerView.addItemDecoration(new CurrentRequestListDividerItemDecoration(Color.GRAY));
 
         txt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,10 +178,6 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
             }
         });
-
-        bloodSelected = "";
-        setHasOptionsMenu(true);
-        return v;
     }
 
     private void checkAdapterEmptyOrNot() {
@@ -191,9 +209,36 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
         if(item.getItemId() == R.id.action_filter){
 
             Toast.makeText(getContext(),"Filter Apply",Toast.LENGTH_SHORT).show();
+            //DialogFilterDonor dialogFilterDonor = DialogFilterDonor.newInstance(donorHelper.getApprovedBloodRequestList());
+
+            ArrayList<String> addressList = getAddressListFromRequest();
+
+            DialogFilterDonor dialogFilterDonor = DialogFilterDonor.newInstance(addressList);
+
+            dialogFilterDonor.setTargetFragment(SearchDonarFragment.this,APPLY_FILTER);
+
+            dialogFilterDonor.show(getFragmentManager(), "Show RequestList");
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList<String> getAddressListFromRequest() {
+
+        ArrayList<String> addressList = new ArrayList<String>();
+
+        for (BloodRequest request:
+             donorHelper.getApprovedBloodRequestList()) {
+
+            String address = request.getDonateLocation().toString();
+
+            if( address != null){
+
+                addressList.add(address);
+            }
+        }
+
+        return addressList;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -202,6 +247,9 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     @Override
     public void onDetach() {
         super.onDetach();
+
+        filteredDonorList.clear();
+        filteredDonorList.addAll(donorList);
     }
 
     @Override
@@ -255,15 +303,127 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
     private void filteredDonorListByBlood(String bloodSelected) {
 
         filteredDonorList.clear();
+
+         if(listForFiltering.size()>0){
+            for (int i = 0; i < listForFiltering.size(); i++) {
+                Donor donor = listForFiltering.get(i);
+                System.out.println("*** I am in inside For Loop");
+
+                if (donor.getBloodGroup().equals(bloodSelected)) {
+                    filteredDonorList.add(donor);
+                }
+            }
+             listForFiltering.clear();
+             listForFiltering.addAll(filteredDonorList);
+        }
+        else {
+             for (int i = 0; i < donorList.size(); i++) {
+                 Donor donor = donorList.get(i);
+                 System.out.println("*** I am in inside For Loop");
+
+                 if (donor.getBloodGroup().equals(bloodSelected)) {
+                     filteredDonorList.add(donor);
+                 }
+                 listForFiltering.clear();
+                 listForFiltering.addAll(filteredDonorList);
+             }
+        }
+
+
+        /*filteredDonorList.clear();
+        listForFiltering.clear();
         for (int i = 0; i < donorList.size(); i++) {
             Donor donor = donorList.get(i);
             System.out.println("*** I am in inside For Loop");
             if (donor.getBloodGroup().equals(bloodSelected)) {
-                filteredDonorList.add(donor);
+                listForFiltering.add(donor);
             }
             System.out.println("***** Filtered DonorList Size : " + filteredDonorList.size());
             System.out.println("***** DonorList Size : " + donorList.size());
         }
+
+        filteredDonorList.addAll(listForFiltering);*/
+        mAdapter.notifyDataSetChanged();
+        checkAdapterEmptyOrNot();
+
+    }
+
+    private void filteredDonorListByAddress(String addressSelected) {
+
+       /* List<Donor> donorList = new ArrayList<Donor>();
+
+        if(listForFiltering.size()== 0){
+
+            listForFiltering.addAll(donorList);
+        }
+
+        donorList.addAll(listForFiltering);
+
+        //listForFiltering.clear();
+        filteredDonorList.clear();
+
+        if(listForFiltering.size()>0){
+            for (int i = 0; i < listForFiltering.size(); i++) {
+                Donor donor = listForFiltering.get(i);
+                System.out.println("*** I am in inside For Loop");
+
+                for (Address address:donor.getAddresses()
+                        ) {
+                    if(address.toString().equals(addressSelected)){
+
+                        if(address.getAddressType().equals("Home")) {
+
+                            filteredDonorList.add(donor);
+                        }
+                    }
+                }
+
+                listForFiltering.clear();
+                listForFiltering.addAll(filteredDonorList);
+
+            }
+
+        }
+        else {
+            for (int i = 0; i < donorList.size(); i++) {
+                Donor donor = donorList.get(i);
+                System.out.println("*** I am in inside For Loop");
+
+                for (Address address : donor.getAddresses()
+                        ) {
+                    if (address.toString().equals(addressSelected)) {
+
+                        if (address.getAddressType().equals("Home")) {
+
+                            listForFiltering.add(donor);
+                        }
+                    }
+                }
+
+                System.out.println("***** Filtered DonorList Size : " + filteredDonorList.size());
+                System.out.println("***** DonorList Size : " + donorList.size());
+            }
+            filteredDonorList.addAll(listForFiltering);
+        }*/
+        filteredDonorList.clear();
+        listForFiltering.clear();
+        for (int i = 0; i < donorList.size(); i++) {
+            Donor donor = donorList.get(i);
+            System.out.println("*** I am in inside For Loop");
+
+            for (Address address:donor.getAddresses()
+                    ) {
+                if(address.toString().equals(addressSelected)){
+
+                    if(address.getAddressType().equals("Home")) {
+
+                        listForFiltering.add(donor);
+                    }
+                }
+            }
+
+        }
+        filteredDonorList.addAll(listForFiltering);
         mAdapter.notifyDataSetChanged();
         checkAdapterEmptyOrNot();
 
@@ -282,14 +442,39 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                 int pos = data.getIntExtra(DialogRecyclerFragment.REQUEST_POSITION,0);
                 if(donorOnLongClick!= null) {
                     System.out.println("***** DonorOnLongClick Is Added to List ");
-                    donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
-                    donorOnLongClick = null;
+
+                   boolean checkDonorPresent =  addDonorToRequest(pos);
+
+                    if(!checkDonorPresent){
+                        donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
+                        donorOnLongClick = null;
+                    }
                 }
                 else{
                     System.out.println("***** DonorOnLongClick Is Null ");
                 }
             }
+            if(requestCode == APPLY_FILTER){
+
+                String addressSelected = data.getStringExtra(DialogFilterDonor.REQUEST_ADDRESS);
+
+                filteredDonorListByAddress(addressSelected);
+            }
         }
+    }
+
+    private boolean addDonorToRequest(int pos) {
+
+        boolean isPresent = false;
+
+        for (Donor donor:
+                donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed()) {
+            if(donor.getDonorID().equals(donorOnLongClick.getDonorID())){
+
+                isPresent = true;
+            }
+        }
+        return isPresent;
     }
 
     public class DonorSearchViewAdapter extends RecyclerView.Adapter<DonorSearchViewAdapter.MyViewHolder> implements Filterable {
@@ -325,7 +510,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
             holder.txt_phone_number.setText(donorObjectList.get(position).getMobileNumber() + "");
 
-            holder.txt_address.setText(donorObjectList.get(position).getAddresses().get(0).getAddressLine3());
+            holder.txt_address.setText(donorObjectList.get(position).getAddresses().get(0).getCity());
 
             InputStream is = dataStore.getBloodImageInputStream(donorObjectList.get(position).getBloodGroup());
 
@@ -461,19 +646,29 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
             protected FilterResults performFiltering(CharSequence constraint) {
                 filteredDonorList.clear();
 
+                if(listForFiltering.size()==0){
+                    listForFiltering.addAll(donorList);
+                }
+
                 final FilterResults results = new FilterResults();
                 if (constraint.length() == 0) {
-                    filteredDonorList.addAll(donorList);
-                    bloodSelected = "";
 
+                    if(listForFiltering.size()>0){
+                        filteredDonorList.addAll(listForFiltering);
+                    }
+                    else {
+                        filteredDonorList.addAll(donorList);
+
+                    }
+                    bloodSelected = "";
                     System.out.println("*** I am in If length is 0");
                 } else {
                     final String filterPattern = constraint.toString().toLowerCase().trim();
                     System.out.println("*** I am in If length is > 0");
                     System.out.println("*** Filtered pattern : " + filterPattern);
 
-                    for (int i = 0; i < donorList.size(); i++) {
-                        Donor donor = donorList.get(i);
+                    for (int i = 0; i < listForFiltering.size(); i++) {
+                        Donor donor = listForFiltering.get(i);
                         System.out.println("*** I am in inside For Loop");
                         if(bloodSelected.length()>0){
                             if (donor.getDonorName().toLowerCase().startsWith(filterPattern)&& donor.getBloodGroup().equals(bloodSelected)) {

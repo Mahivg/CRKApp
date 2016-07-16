@@ -1,5 +1,7 @@
 package com.auidbook.prototype.listener;
 
+import android.support.v4.app.Fragment;
+
 import com.auidbook.prototype.Model.BloodRequest;
 
 import java.util.ArrayList;
@@ -14,5 +16,6 @@ public interface ICommunicator {
 
     void setBloodRequset(List<BloodRequest> requsetBloodList);
 
+    void changeFragment(Fragment fragment);
 
 }

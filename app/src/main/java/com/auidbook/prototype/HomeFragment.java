@@ -41,11 +41,10 @@ public class HomeFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private List<BloodRequest> bloodList;
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         crkApp = (CRKApp) getActivity().getApplicationContext();
 
@@ -56,6 +55,21 @@ public class HomeFragment extends Fragment {
         //System.out.println("BloodList Size :  "+donorHelper.getAllBloodRequest().size());
 
         dataStore = DataStore.getDataStore(getActivity());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        initViews(v);
+
+        return v;
+
+    }
+
+    private void initViews(View v) {
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.bloodrequest_recycler_view);
 
@@ -70,10 +84,9 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setAdapter(mAdapter);
-
-        return v;
-
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
 

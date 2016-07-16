@@ -38,10 +38,11 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMap {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMap,ICommunicator {
 
     private static final String TAG = "MainActivity";
     private static final String SELECTED_POSITION = "selectedPosition";
+    private static boolean searchDonorReloaded = false;
 
     private CRKApp crkApp;
     private DonorHelper donorHelper;
@@ -57,20 +58,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView txt_userName;
     private TextView txt_lastDonated;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println(" On Start mainActivity Called ");
-
-
-       /* if(userLogged.isRequestAccepted()){
-            replaceNavigationFragment(new AcceptDonationFragment());
-        }
-        else{
-            replaceNavigationFragment( new StartFragment());
-        }
-        getSupportActionBar().setTitle("Home");*/
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +80,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         intNavDrawer();
 
-        if(userLogged.isRequestAccepted()){
-            replaceNavigationFragment(new AcceptDonationFragment());
-        }
-        else{
-            replaceNavigationFragment( new StartFragment());
-        }
-        getSupportActionBar().setTitle("Home");
+        replaceNavigationFragment(new StartFragment());
+
     }
 
     private void intNavDrawer() {
@@ -107,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mDrawerLayout.isDrawerVisible(GravityCompat.START))
+                if (mDrawerLayout.isDrawerVisible(GravityCompat.START))
                     mDrawerLayout.closeDrawer(GravityCompat.START);
                 else
                     mDrawerLayout.openDrawer(GravityCompat.START);
@@ -115,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         // Add drawer listeners
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+
         mNavigationView.setNavigationItemSelectedListener(this);
 
         View navDrawerHeader = mNavigationView.inflateHeaderView(R.layout.nav_drawer_header);
@@ -154,59 +137,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.home_fragment:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
 
-                System.out.println("OnNavigation :UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
-                if(userLogged.isRequestAccepted()){
-                    replaceNavigationFragment(new AcceptDonationFragment());
-                }
-                else{
-                    replaceNavigationFragment(new StartFragment());
-                }
-                getSupportActionBar().setTitle("Home");
-                mCurrentNavPosition = 0;
+                //System.out.println("OnNavigation :UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
+
+                replaceNavigationFragment(new StartFragment());
+
                 break;
 
             case R.id.current_request_fragment:
-                // getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new CurrentRequestFragment());
-                getSupportActionBar().setTitle("Current Request");
-                mCurrentNavPosition = 1;
+
                 break;
             case R.id.create_request_fragment:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new CreateRequestFragment());
-                getSupportActionBar().setTitle("Create Request");
-                mCurrentNavPosition = 1;
+
                 break;
             case R.id.view_response_fragment:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new ResponseFragment());
-                getSupportActionBar().setTitle("Responses");
-                mCurrentNavPosition = 2;
+
                 break;
             case R.id.view_donors_fragment:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new SearchDonarFragment());
-                getSupportActionBar().setTitle("Search Donors");
-                mCurrentNavPosition = 3;
+
                 break;
             case R.id.update_profile_fragment:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new UpdateProfileFragment());
-                getSupportActionBar().setTitle("Update Profile");
-                mCurrentNavPosition = 4;
+
                 break;
             case R.id.helpandfeedback:
-                //getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                 replaceNavigationFragment(new FeedBackFragment());
-                getSupportActionBar().setTitle("FeedBack Please");
-                mCurrentNavPosition = 5;
+
                 break;
             case R.id.donarLocation:
                 replaceNavigationFragment(new MapContainerFragment());
-                getSupportActionBar().setTitle("Surrounding Donars");
-                mCurrentNavPosition = 6;
+
                 break;
             default:
                 Log.w(TAG, "Unknown drawer item selected");
@@ -260,41 +230,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
 
-        if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_fragment_layout);
+
+
+        if (currentFragment instanceof SearchDonarFragment  && !searchDonorReloaded) {
+             if (currentFragment.isVisible()) {
+                System.out.println("Inside current fragment serch donor");
+                System.out.println(currentFragment);
+                replaceNavigationFragment(new SearchDonarFragment());
+            }
+
         } else {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Alert");
-                builder.setMessage("Do you Want to Exit?");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(i);
-                        //finishAffinity();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog alert = builder.create();
-                alert.show();
-
+            if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
-                // super.onBackPressed();
-                getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
-                if(userLogged.isRequestAccepted()){
-                    replaceNavigationFragment(new AcceptDonationFragment());
-                }
-                else{
+                if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Alert");
+                    builder.setMessage("Do you Want to Exit?");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(i);
+                            //finishAffinity();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                } else {
+
+                    getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
+
                     replaceNavigationFragment(new StartFragment());
+
                 }
-                getSupportActionBar().setTitle("Home");
             }
         }
     }
@@ -306,11 +286,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected boolean replaceNavigationFragment(Fragment fragment) {
+
+
+        setNavbarTitle(fragment);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container_fragment_layout, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         return true;
+    }
+
+    private void setNavbarTitle(Fragment fragment) {
+
+        if(fragment instanceof StartFragment){
+
+            getSupportActionBar().setTitle("Home");
+            mCurrentNavPosition = 0;
+        }
+        if(fragment instanceof CurrentRequestFragment){
+            getSupportActionBar().setTitle("Current Request");
+            mCurrentNavPosition = 1;
+        }
+        if(fragment instanceof CreateRequestFragment){
+            getSupportActionBar().setTitle("Create Request");
+            mCurrentNavPosition = 1;
+        }
+        if(fragment instanceof SearchDonarFragment){
+            searchDonorReloaded = !searchDonorReloaded;
+            getSupportActionBar().setTitle("Search Donors");
+            mCurrentNavPosition = 3;
+
+        }
+        if(fragment instanceof ResponseFragment){
+            getSupportActionBar().setTitle("Responses");
+            mCurrentNavPosition = 2;
+        }
+        if(fragment instanceof UpdateProfileFragment){
+            getSupportActionBar().setTitle("Update Profile");
+            mCurrentNavPosition = 4;
+        }
+        if(fragment instanceof FeedBackFragment){
+             getSupportActionBar().setTitle("FeedBack Please");
+             mCurrentNavPosition = 6;
+        }
+        if(fragment instanceof MapContainerFragment){
+
+              getSupportActionBar().setTitle("Surrounding Donars");
+              mCurrentNavPosition = 7;
+        }
+        mNavigationView.getMenu().getItem(mCurrentNavPosition).setChecked(true);
     }
 
     private void populateNavigationDrawerHeader() {
@@ -331,4 +355,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    @Override
+    public List<BloodRequest> getBloodRequset() {
+        return null;
+    }
+
+    @Override
+    public void setBloodRequset(List<BloodRequest> requsetBloodList) {
+
+    }
+
+    @Override
+    public void changeFragment(Fragment fragment) {
+        replaceNavigationFragment(fragment);
+    }
 }

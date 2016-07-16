@@ -21,6 +21,7 @@ import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
+import com.auidbook.prototype.listener.ICommunicator;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +40,20 @@ public class ResponseFragment extends Fragment {
     private CRKApp crkApp;
     private DonorHelper donorHelper;
     private DataStore dataStore;
+    private ICommunicator communicator;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        crkApp = (CRKApp) getActivity().getApplicationContext();
+
+        donorHelper = crkApp.getDonorHelper();
+
+        dataStore = DataStore.getDataStore(getActivity());
+
+        communicator = (ICommunicator) getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,11 +61,7 @@ public class ResponseFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_responses, container, false);
 
-        crkApp = (CRKApp) getActivity().getApplicationContext();
 
-        donorHelper = crkApp.getDonorHelper();
-
-        dataStore = DataStore.getDataStore(getActivity());
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.bloodresponse_recycler_view);
 
@@ -143,10 +154,14 @@ public class ResponseFragment extends Fragment {
                 txt_hospital= (TextView) itemView.findViewById(R.id.txt_hospital);
 
                 btn_donate= (Button) itemView.findViewById(R.id.btn_donate);
+
                 btn_donate.setVisibility(View.GONE);
 
                 txt_response_number = (TextView) itemView.findViewById(R.id.txt_response_number);
+
                 txt_response_number.setVisibility(View.VISIBLE);
+
+                txt_response_number.setOnClickListener(this);
 
                 itemView.setOnClickListener(this);
 
@@ -154,16 +169,26 @@ public class ResponseFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-
                 mPosition = getAdapterPosition();
 
-                if(requestBloodList.get(mPosition).getDonorResponsed().size()>0) {
-                    Intent i = new Intent(getContext(), DonorRespondedActivity.class);
-                    i.putExtra(DATA_POSITION, mPosition);
-                    startActivity(i);
+                if(v.getId() == R.id.txt_response_number) {
+
+                    if (requestBloodList.get(mPosition).getDonorResponsed().size() > 0) {
+                        Intent i = new Intent(getContext(), DonorRespondedActivity.class);
+                        i.putExtra(DATA_POSITION, mPosition);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(getActivity(), "No Donor Responded " + mPosition, Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
-                    Toast.makeText(getActivity(), "No Donor Responded "+mPosition, Toast.LENGTH_SHORT).show();
+                    BloodRequest bloodRequest = requestBloodList.get(mPosition);
+
+                    CreateRequestFragment createRequestFragment = CreateRequestFragment.newInstance(bloodRequest);
+
+                    communicator.changeFragment(createRequestFragment);
+
+                    Toast.makeText(getActivity(), "Goes to edit Response" + mPosition, Toast.LENGTH_SHORT).show();
                 }
             }
         }

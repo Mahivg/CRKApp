@@ -144,4 +144,9 @@ public class Address {
     public void setPrivacyStatus(String privacyStatus) {
         this.privacyStatus = privacyStatus;
     }
+
+    @Override
+    public String toString() {
+        return getAddressLine3()+","+getCity();
+    }
 }
