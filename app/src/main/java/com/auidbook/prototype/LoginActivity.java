@@ -26,13 +26,11 @@ import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.handler.BloodRequestHandler;
 import com.auidbook.prototype.listener.ICommunicator;
 
+import java.io.IOException;
 import java.security.DomainCombiner;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Rawoof on 3/27/2016.
- */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,ICommunicator {
 
     private DonorHelper donorHelper;
@@ -104,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void loginUser() {
+    private void loginUser() throws IOException {
 
         String userName =  edtMobileNumber.getText().toString();
         String password = edtPassword.getText().toString();
@@ -121,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                         crkApp.setDonor(donorHelper.getDonorByUserName(userName));
                         crkApp.setDonorHelper(donorHelper);
-                       // bloodRequestHandler.getAllBloodRequset();
+                       // bloodRequestHandler.getAllBloodRequest();
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(i);
                     } else {

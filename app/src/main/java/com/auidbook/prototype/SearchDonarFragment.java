@@ -230,7 +230,7 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
         for (BloodRequest request:
              donorHelper.getApprovedBloodRequestList()) {
 
-            String address = request.getDonateLocation().toString();
+            String address = request.getAddress();
 
             if( address != null){
 
@@ -350,77 +350,20 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
     private void filteredDonorListByAddress(String addressSelected) {
 
-       /* List<Donor> donorList = new ArrayList<Donor>();
-
-        if(listForFiltering.size()== 0){
-
-            listForFiltering.addAll(donorList);
-        }
-
-        donorList.addAll(listForFiltering);
-
-        //listForFiltering.clear();
-        filteredDonorList.clear();
-
-        if(listForFiltering.size()>0){
-            for (int i = 0; i < listForFiltering.size(); i++) {
-                Donor donor = listForFiltering.get(i);
-                System.out.println("*** I am in inside For Loop");
-
-                for (Address address:donor.getAddresses()
-                        ) {
-                    if(address.toString().equals(addressSelected)){
-
-                        if(address.getAddressType().equals("Home")) {
-
-                            filteredDonorList.add(donor);
-                        }
-                    }
-                }
-
-                listForFiltering.clear();
-                listForFiltering.addAll(filteredDonorList);
-
-            }
-
-        }
-        else {
-            for (int i = 0; i < donorList.size(); i++) {
-                Donor donor = donorList.get(i);
-                System.out.println("*** I am in inside For Loop");
-
-                for (Address address : donor.getAddresses()
-                        ) {
-                    if (address.toString().equals(addressSelected)) {
-
-                        if (address.getAddressType().equals("Home")) {
-
-                            listForFiltering.add(donor);
-                        }
-                    }
-                }
-
-                System.out.println("***** Filtered DonorList Size : " + filteredDonorList.size());
-                System.out.println("***** DonorList Size : " + donorList.size());
-            }
-            filteredDonorList.addAll(listForFiltering);
-        }*/
         filteredDonorList.clear();
         listForFiltering.clear();
         for (int i = 0; i < donorList.size(); i++) {
             Donor donor = donorList.get(i);
-            System.out.println("*** I am in inside For Loop");
-
-            for (Address address:donor.getAddresses()
-                    ) {
-                if(address.toString().equals(addressSelected)){
-
-                    if(address.getAddressType().equals("Home")) {
-
-                        listForFiltering.add(donor);
-                    }
-                }
-            }
+//            for (Address address:donor.getAddresses()
+//                    ) {
+//                if(address.toString().equals(addressSelected)){
+//
+//                    if(address.getAddressType().equals("Home")) {
+//
+//                        listForFiltering.add(donor);
+//                    }
+//                }
+//            }
 
         }
         filteredDonorList.addAll(listForFiltering);
@@ -446,8 +389,8 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                    boolean checkDonorPresent =  addDonorToRequest(pos);
 
                     if(!checkDonorPresent){
-                        donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
-                        donorOnLongClick = null;
+//                        donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed().add(donorOnLongClick);
+//                        donorOnLongClick = null;
                     }
                 }
                 else{
@@ -467,13 +410,13 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
         boolean isPresent = false;
 
-        for (Donor donor:
-                donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed()) {
-            if(donor.getDonorID().equals(donorOnLongClick.getDonorID())){
-
-                isPresent = true;
-            }
-        }
+//        for (Donor donor:
+//                donorHelper.getApprovedBloodRequestList().get(pos).getDonorResponsed()) {
+//            if(donor.getDonorID().equals(donorOnLongClick.getDonorID())){
+//
+//                isPresent = true;
+//            }
+//        }
         return isPresent;
     }
 
@@ -506,13 +449,13 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
 
             holder.image_user.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.no_profile_pic));
 
-            holder.txt_name.setText(donorObjectList.get(position).getDonorName());
+            holder.txt_name.setText(donorObjectList.get(position).getFirstName());
 
-            holder.txt_phone_number.setText(donorObjectList.get(position).getMobileNumber() + "");
+            holder.txt_phone_number.setText(donorObjectList.get(position).getContactNumber() + "");
 
-            holder.txt_address.setText(donorObjectList.get(position).getAddresses().get(0).getCity());
+            holder.txt_address.setText(donorObjectList.get(position).getCity());
 
-            InputStream is = dataStore.getBloodImageInputStream(donorObjectList.get(position).getBloodGroup());
+            InputStream is = dataStore.getBloodImageInputStream("O+ve");
 
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
@@ -671,12 +614,12 @@ public class SearchDonarFragment extends Fragment implements View.OnClickListene
                         Donor donor = listForFiltering.get(i);
                         System.out.println("*** I am in inside For Loop");
                         if(bloodSelected.length()>0){
-                            if (donor.getDonorName().toLowerCase().startsWith(filterPattern)&& donor.getBloodGroup().equals(bloodSelected)) {
+                            if (donor.getFirstName().toLowerCase().startsWith(filterPattern)&& donor.getBloodGroup().equals(bloodSelected)) {
                                 filteredDonorList.add(donor);
                             }
                         }
                         else{
-                            if (donor.getDonorName().toLowerCase().startsWith(filterPattern)) {
+                            if (donor.getFirstName().toLowerCase().startsWith(filterPattern)) {
                                 filteredDonorList.add(donor);
                             }
                         }

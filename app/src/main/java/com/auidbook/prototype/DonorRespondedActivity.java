@@ -1,6 +1,5 @@
 package com.auidbook.prototype;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,14 +8,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.DividerLineItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DonorRespondedActivity extends AppCompatActivity {
@@ -76,7 +72,7 @@ public class DonorRespondedActivity extends AppCompatActivity {
 
         int position = getIntent().getIntExtra(DATA_POSITION,0);
 
-        respondedDonorList = donorHelper.getApprovedBloodRequestList().get(position).getDonorResponsed();
+//        respondedDonorList = donorHelper.getApprovedBloodRequestList().get(position).getDonorResponsed();
 
         System.out.println("Donor Responded : " + respondedDonorList.size());
 
@@ -228,9 +224,9 @@ public class DonorRespondedActivity extends AppCompatActivity {
 
 
 
-            holder.txt_donor_name.setText((respondedDonorList.get(position).getDonorName()));
+            holder.txt_donor_name.setText((respondedDonorList.get(position).getFirstName()));
 
-            holder.txt_contact.setText(respondedDonorList.get(position).getMobileNumber());
+            holder.txt_contact.setText(respondedDonorList.get(position).getContactNumber());
 
             holder.btn_accept.setOnClickListener(new View.OnClickListener() {
                 @Override

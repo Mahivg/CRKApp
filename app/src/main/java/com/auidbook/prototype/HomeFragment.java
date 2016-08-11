@@ -3,9 +3,7 @@ package com.auidbook.prototype;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,15 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
-import com.auidbook.prototype.Model.BloodRequest;
-import com.auidbook.prototype.UIModel.PagerAdapter;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -128,11 +124,11 @@ public class HomeFragment extends Fragment {
 
             holder.txt_requester_name.setText((bloodRequestList.get(position).getPatientName()));
 
-            holder.txt_blood_unit.setText(bloodRequestList.get(position).getNoOfUnitsRrequired()+" Units Required");
+            holder.txt_blood_unit.setText(bloodRequestList.get(position).getNumberOfUnits()+" Units Required");
 
-            holder.txt_hospital.setText(bloodRequestList.get(position).getDonateLocation().getAddressLine3());
+            holder.txt_hospital.setText(bloodRequestList.get(position).getLocality());
 
-            InputStream is = dataStore.getBloodImageInputStream(bloodRequestList.get(position).getBloodGroup());
+            InputStream is = dataStore.getBloodImageInputStream("O+ve");
 
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
@@ -141,10 +137,10 @@ public class HomeFragment extends Fragment {
             holder.btn_donate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bloodRequestList.get(position).getDonorResponsed().add(donor);
+//                    bloodRequestList.get(position).getDonorResponsed().add(donor);
 
-                    donor.setIsRequestAccepted(true);
-                    donorHelper.getDonorByUserName(donor.getMobileNumber()).setIsRequestAccepted(true);
+//                    donor.setIsRequestAccepted(true);
+//                    donorHelper.getDonorByUserName(donor.getMobileNumber()).setIsRequestAccepted(true);
 
                     getActivity().finish();
                     startActivity(getActivity().getIntent());

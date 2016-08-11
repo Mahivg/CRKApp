@@ -15,8 +15,6 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auidbook.prototype.Model.BloodRequest;
@@ -24,14 +22,13 @@ import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.Model.Fields.Address;
 import com.auidbook.prototype.UIModel.DatePickerFragment;
-import com.auidbook.prototype.enums.RequestState;
+import com.auidbook.prototype.enums.RequestStatus;
 import com.auidbook.prototype.listener.ICommunicator;
 //import com.wefika.horizontalpicker.HorizontalPicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Created by Rawoof on 5/8/2016.
@@ -88,13 +85,8 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         v =  inflater.inflate(R.layout.fragment_create_request, container, false);
         initViews();
         if(bloodRequestForEdit!= null){
-
-            System.out.println(" Inside BloodRequestForEdit is Not null");
-            System.out.println(" With Reason : "+ bloodRequestForEdit.getReason());
             populateBloodData(bloodRequestForEdit);
-
         }
-
         return v;
     }
 
@@ -206,7 +198,7 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
         mobileArray.add(mobileNumber);
         mobileArray.add(altMobNumber);
         hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");
-//        request = new BloodRequest("","",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
+//        request = new BloodRequest("","",patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestStatus.Pending,crkApp.getDonor().getDonorID());
 
         if(bloodRequestForEdit != null){
 
@@ -224,11 +216,11 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
 
             reqId = bloodRequestForEdit.getRequestId();
             if(mDate == null){
-                mDate = bloodRequestForEdit.getDateOfDonation();
+                mDate = bloodRequestForEdit.getDonationDate();
             }
-            request = new BloodRequest("",reqId,patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,bloodRequestForEdit.getDonorResponsed(), RequestState.Pending,crkApp.getDonor().getDonorID());
-
-            donorHelper.updateBloodRequest(request);
+//            request = new BloodRequest(reqId,patientName,null, age,hospitalAddress,reason,mobileArray,mDate, RequestStatus.Pending,crkApp.getDonor().getDonorID());
+//
+//            donorHelper.updateBloodRequest(request);
             bloodRequestForEdit = null;
 
             communicator.changeFragment(new ResponseFragment());
@@ -251,9 +243,9 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
             hospitalAddress = new Address("",addressLine1,addressLine2,addressLine3,"","","","","","","");*/
             reqId = "Req" + Math.round(Math.random()*1000);
 
-            request = new BloodRequest("",reqId,patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestState.Pending,crkApp.getDonor().getDonorID());
+//            request = new BloodRequest("",reqId,patientName,gender,bloodGroup,mUnitsRequired,hospitalAddress,reason,mobileArray,mDate,null, RequestStatus.Pending,crkApp.getDonor().getDonorID());
 
-            donorHelper.getAllBloodRequest().add(request);
+//            donorHelper.getAllBloodRequest().add(request);
 
             Toast.makeText(getContext(), "Request Submitted To Add", Toast.LENGTH_SHORT).show();
         }
@@ -295,26 +287,26 @@ public class CreateRequestFragment extends Fragment implements View.OnClickListe
     private void populateBloodData(BloodRequest bloodRequestForEdit) {
 
         edtPatientName.setText(bloodRequestForEdit.getPatientName());
-        String gender = bloodRequestForEdit.getGender();
-        setRadioButton(gender);
-        double val = bloodRequestForEdit.getNoOfUnitsRrequired()- Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
-        if(val != 0){
-            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
-                    np_units.setValue(intVal.intValue());
-                    mCheckHalfUnits.setChecked(true);
-        }
-        else{
-            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
-            np_units.setValue(intVal.intValue());
-        }
-        setDateText(bloodRequestForEdit.getDateOfDonation());
-        edtBloodGroup.setText(bloodRequestForEdit.getBloodGroup());
-        edtMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(0));
-        edtAltMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(1));
-        edtAddressLine1.setText(bloodRequestForEdit.getDonateLocation().getAddressLine1());
-        edtAddressLine2.setText(bloodRequestForEdit.getDonateLocation().getAddressLine2());
-        edtAddressLine3.setText(bloodRequestForEdit.getDonateLocation().getAddressLine3());
-        edtReason.setText(bloodRequestForEdit.getReason());
+//        String gender = bloodRequestForEdit.getGender();
+//        setRadioButton(gender);
+//        double val = bloodRequestForEdit.getNoOfUnitsRrequired()- Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+//        if(val != 0){
+//            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+//                    np_units.setValue(intVal.intValue());
+//                    mCheckHalfUnits.setChecked(true);
+//        }
+//        else{
+//            Double intVal = Math.floor(bloodRequestForEdit.getNoOfUnitsRrequired());
+//            np_units.setValue(intVal.intValue());
+//        }
+//        setDateText(bloodRequestForEdit.getDateOfDonation());
+//        edtBloodGroup.setText(bloodRequestForEdit.getBloodGroup());
+//        edtMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(0));
+//        edtAltMobileNumber.setText(bloodRequestForEdit.getContactNumbers().get(1));
+//        edtAddressLine1.setText(bloodRequestForEdit.getDonateLocation().getAddressLine1());
+//        edtAddressLine2.setText(bloodRequestForEdit.getDonateLocation().getAddressLine2());
+//        edtAddressLine3.setText(bloodRequestForEdit.getDonateLocation().getAddressLine3());
+//        edtReason.setText(bloodRequestForEdit.getReason());
 
     }
 

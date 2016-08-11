@@ -1,9 +1,7 @@
 package com.auidbook.prototype;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,17 +18,12 @@ import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.DataStore;
 import com.auidbook.prototype.Model.DonorHelper;
-import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
 import com.auidbook.prototype.listener.ICommunicator;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Rawoof on 5/8/2016.
- */
-public class ResponseFragment extends Fragment {
+public class ResponseFragment extends Fragment  {
 
     private final String DATA_POSITION = "mPosition";
     private RecyclerView mRecyclerView;
@@ -112,13 +105,13 @@ public class ResponseFragment extends Fragment {
 
             holder.txt_requester_name.setText((requestBloodList.get(position).getPatientName()));
 
-            holder.txt_blood_unit.setText(requestBloodList.get(position).getNoOfUnitsRrequired()+" Units Required");
+            holder.txt_blood_unit.setText(requestBloodList.get(position).getNumberOfUnits()+" Units Required");
 
-            holder.txt_hospital.setText(requestBloodList.get(position).getDonateLocation().getAddressLine3());
+            holder.txt_hospital.setText(requestBloodList.get(position).getLocality());
 
-            holder.txt_response_number.setText(requestBloodList.get(position).getDonorResponsed().size()+"");
+            holder.txt_response_number.setText("??");
 
-            InputStream is = dataStore.getBloodImageInputStream(requestBloodList.get(position).getBloodGroup());
+            InputStream is = dataStore.getBloodImageInputStream("O+ve");
 
             Bitmap bitmap = BitmapFactory.decodeStream(is);
 
@@ -173,13 +166,13 @@ public class ResponseFragment extends Fragment {
 
                 if(v.getId() == R.id.txt_response_number) {
 
-                    if (requestBloodList.get(mPosition).getDonorResponsed().size() > 0) {
-                        Intent i = new Intent(getContext(), DonorRespondedActivity.class);
-                        i.putExtra(DATA_POSITION, mPosition);
-                        startActivity(i);
-                    } else {
-                        Toast.makeText(getActivity(), "No Donor Responded " + mPosition, Toast.LENGTH_SHORT).show();
-                    }
+//                    if (requestBloodList.get(mPosition).getDonorResponsed().size() > 0) {
+//                        Intent i = new Intent(getContext(), DonorRespondedActivity.class);
+//                        i.putExtra(DATA_POSITION, mPosition);
+//                        startActivity(i);
+//                    } else {
+//                        Toast.makeText(getActivity(), "No Donor Responded " + mPosition, Toast.LENGTH_SHORT).show();
+//                    }
                 }
                 else{
                     BloodRequest bloodRequest = requestBloodList.get(mPosition);

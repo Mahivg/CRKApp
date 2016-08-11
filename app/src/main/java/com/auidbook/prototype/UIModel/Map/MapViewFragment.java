@@ -41,17 +41,9 @@ public class MapViewFragment extends MapFragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    public Marker placeMarker(Donor donarInfo) {
+    public Marker placeMarker(Donor donorInfo) {
 
-        LatLng latLng = null;
-
-        for(Address address : donarInfo.getAddresses()){
-
-            if(address.getAddressType().equals("Home")){
-
-                latLng = new LatLng(Double.parseDouble(address.getLatitude()),Double.parseDouble(address.getLongitude()));
-            }
-        }
+        LatLng latLng = new LatLng(donorInfo.getLatitude(),donorInfo.getLongitude());
 
         Marker ownMarker = getMap().addMarker(new MarkerOptions()
                 .position(latLng)

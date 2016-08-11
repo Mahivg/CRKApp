@@ -5,7 +5,7 @@ package com.auidbook.prototype.listener;
  */
 public interface IBloodRequest {
 
-    void getAllBloodRequset();
+    void getAllBloodRequest();
 
     void updateBloodRequest();
 

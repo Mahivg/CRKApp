@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by njagadeesan on 14-05-2016.
- */
 public class DataStore {
 
     private static DataStore storeInstance = null;

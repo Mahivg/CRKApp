@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.R;
-import com.auidbook.prototype.SearchDonarFragment;
 
 import java.util.List;
 
@@ -111,11 +109,11 @@ public class DialogRecyclerFragment extends DialogFragment {
 
             holder.txt_requester_name.setText(requestBloodList.get(position).getPatientName());
 
-            holder.txt_requester_blood_unit.setText(requestBloodList.get(position).getNoOfUnitsRrequired()+" Units Required");
+            holder.txt_requester_blood_unit.setText(requestBloodList.get(position).getNumberOfUnits()+" Units Required");
 
-            holder.txt_requester_phone_number.setText(requestBloodList.get(position).getContactNumbers().get(0)+"");
+            holder.txt_requester_phone_number.setText(requestBloodList.get(position).getContactNumber()+"");
 
-            holder.txt_requester_address.setText(requestBloodList.get(position).getDonateLocation().getAddressLine3());
+            holder.txt_requester_address.setText(requestBloodList.get(position).getLocality());
 
             holder.image_request_user.setImageResource(R.drawable.no_profile_pic);
 

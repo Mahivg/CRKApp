@@ -2,9 +2,6 @@ package com.auidbook.prototype.Model;
 
 import android.app.Application;
 
-/**
- * Created by mgundappan on 02-06-2016.
- */
 public class CRKApp extends Application {
 
     private Donor donor;

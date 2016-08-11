@@ -12,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DonorHelper;
-import com.auidbook.prototype.Model.BloodRequest;
 import com.auidbook.prototype.UIModel.CurrentRequestListDividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ public class CurrentRequestFragment extends Fragment {
 
         mRecyclerView.setHasFixedSize(true);
 
-        pendingBloodRequestList = donorHelper.getPendingBloodRequestList();
+//        pendingBloodRequestList = donorHelper.getPendingBloodRequestList();
 
         mAdapter = new CurrentRequestAdapter(pendingBloodRequestList);
 
@@ -95,11 +94,11 @@ public class CurrentRequestFragment extends Fragment {
 
             holder.txt_requester_name.setText(requestBloodList.get(position).getPatientName());
 
-            holder.txt_requester_blood_unit.setText(requestBloodList.get(position).getNoOfUnitsRrequired()+" Units Required");
+            holder.txt_requester_blood_unit.setText(requestBloodList.get(position).getNumberOfUnits()+" Units Required");
 
-            holder.txt_requester_phone_number.setText(requestBloodList.get(position).getContactNumbers().get(0)+"");
+            holder.txt_requester_phone_number.setText(requestBloodList.get(position).getContactNumber()+"");
 
-            holder.txt_requester_address.setText(requestBloodList.get(position).getDonateLocation().getAddressLine3());
+            holder.txt_requester_address.setText(requestBloodList.get(position).getLocality());
 
             holder.image_request_user.setImageResource(R.drawable.no_profile_pic);
 

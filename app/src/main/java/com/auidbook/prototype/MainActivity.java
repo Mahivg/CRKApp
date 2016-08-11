@@ -1,7 +1,6 @@
 package com.auidbook.prototype;
 
 import android.app.AlertDialog;
-import android.app.backup.BackupHelper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,16 +9,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.auidbook.prototype.Model.BloodRequest;
@@ -30,15 +26,11 @@ import com.auidbook.prototype.Model.DonorHelper;
 import com.auidbook.prototype.UIModel.Map.IMap;
 import com.auidbook.prototype.UIModel.Map.MapContainerFragment;
 import com.auidbook.prototype.UIModel.Map.MapViewFragment;
-import com.auidbook.prototype.handler.BloodRequestHandler;
 import com.auidbook.prototype.listener.ICommunicator;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, IMap,ICommunicator {
+public class MainActivity extends BaseLoggedInUserActivity implements NavigationView.OnNavigationItemSelectedListener, IMap,ICommunicator {
 
     private static final String TAG = "MainActivity";
     private static final String SELECTED_POSITION = "selectedPosition";
@@ -46,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private CRKApp crkApp;
     private DonorHelper donorHelper;
-    private BloodRequestHandler bloodRequestHandler;
     private Donor userLogged;
     private SessionManager sessionManager;
     private int mCurrentNavPosition;
@@ -73,10 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         userLogged = crkApp.getDonor();
 
         sessionManager = new SessionManager(this);
-
-        System.out.println(" Logged User Name : " + userLogged.getDonorName());
-
-        System.out.println("OnCreate UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
 
         intNavDrawer();
 
@@ -107,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         populateNavigationDrawerHeader();
 
-        setNavigationDrawerItems(userLogged.getMemberType());
+        setNavigationDrawerItems("Member");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -339,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void populateNavigationDrawerHeader() {
 
-        txt_userName.setText(userLogged.getDonorName());
+        txt_userName.setText(userLogged != null ? userLogged.getFirstName() : "");
     }
 
     private void setNavigationDrawerItems(String memberType) {

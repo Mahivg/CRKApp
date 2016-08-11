@@ -1,7 +1,5 @@
 package com.auidbook.prototype.UIModel.Map;
 
-import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,9 +11,6 @@ import android.widget.Button;
 import com.auidbook.prototype.MainActivity;
 import com.auidbook.prototype.R;
 
-/**
- * Created by njagadeesan on 21-05-2016.
- */
 public class MapContainerFragment extends Fragment implements View.OnClickListener {
     private MapViewFragment mapViewFragment;
     private IMap iMap;
