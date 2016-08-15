@@ -12,9 +12,6 @@ import android.widget.ImageView;
 
 import com.auidbook.prototype.UIModel.PlayGifView;
 
-/**
- * Created by mgundappan on 03-06-2016.
- */
 public class AcceptDonationFragment extends Fragment {
 
 
@@ -22,7 +19,6 @@ public class AcceptDonationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_after_accept_donation, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_after_accept_donation, container, false);
     }
 }

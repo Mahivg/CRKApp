@@ -37,10 +37,5 @@
             android:icon="@drawable/ic_help_black_24dp"
             android:title="@string/feedback"
             />
-        <item
-            android:id="@+id/donarLocation"
-            android:icon="@drawable/ic_place_black_24dp"
-            android:title="@string/locateDonar"
-            />
     </group>
 </menu>

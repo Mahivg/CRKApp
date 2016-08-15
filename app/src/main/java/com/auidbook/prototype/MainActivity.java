@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +31,7 @@ import com.auidbook.prototype.listener.ICommunicator;
 
 import java.util.List;
 
-public class MainActivity extends BaseLoggedInUserActivity implements NavigationView.OnNavigationItemSelectedListener, IMap,ICommunicator {
+public class MainActivity extends BaseLoggedInUserActivity implements NavigationView.OnNavigationItemSelectedListener, IMap, ICommunicator {
 
     private static final String TAG = "MainActivity";
     private static final String SELECTED_POSITION = "selectedPosition";
@@ -67,7 +68,7 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
         intNavDrawer();
 
-        replaceNavigationFragment(new StartFragment());
+        replaceNavigationFragment(new HomeFragment());
 
     }
 
@@ -98,8 +99,7 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.app_name,R.string.app_name)
-        {
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -119,18 +119,24 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        switch (intent.getAction()) {
+            case Constants.VIEW_REQUEST_DETAILS_ACTION:
+                RecipientDetailsFragment recipientDetailsFragment = new RecipientDetailsFragment();
+                recipientDetailsFragment.setArguments(intent.getExtras());
+                replaceNavigationFragment(recipientDetailsFragment);
+
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.home_fragment:
-
-                //System.out.println("OnNavigation :UserLogged IsRequest Accepted : " + userLogged.isRequestAccepted());
-
-                replaceNavigationFragment(new StartFragment());
-
+                replaceNavigationFragment(new HomeFragment());
                 break;
-
             case R.id.current_request_fragment:
 
                 replaceNavigationFragment(new CurrentRequestFragment());
@@ -159,10 +165,6 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
             case R.id.helpandfeedback:
 
                 replaceNavigationFragment(new FeedBackFragment());
-
-                break;
-            case R.id.donarLocation:
-                replaceNavigationFragment(new MapContainerFragment());
 
                 break;
             default:
@@ -214,6 +216,7 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
         super.onSaveInstanceState(outState);
         outState.putInt(SELECTED_POSITION, mCurrentNavPosition);
     }
+
     @Override
     public void onBackPressed() {
 
@@ -221,8 +224,8 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_fragment_layout);
 
 
-        if (currentFragment instanceof SearchDonarFragment  && !searchDonorReloaded) {
-             if (currentFragment.isVisible()) {
+        if (currentFragment instanceof SearchDonarFragment && !searchDonorReloaded) {
+            if (currentFragment.isVisible()) {
                 System.out.println("Inside current fragment serch donor");
                 System.out.println(currentFragment);
                 replaceNavigationFragment(new SearchDonarFragment());
@@ -259,7 +262,7 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
                     getSupportFragmentManager().popBackStack(null, getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
 
-                    replaceNavigationFragment(new StartFragment());
+                    replaceNavigationFragment(new HomeFragment());
 
                 }
             }
@@ -273,8 +276,6 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
     }
 
     protected boolean replaceNavigationFragment(Fragment fragment) {
-
-
         setNavbarTitle(fragment);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container_fragment_layout, fragment);
@@ -285,41 +286,44 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
     private void setNavbarTitle(Fragment fragment) {
 
-        if(fragment instanceof StartFragment){
+        if (fragment instanceof HomeFragment) {
 
             getSupportActionBar().setTitle("Home");
             mCurrentNavPosition = 0;
         }
-        if(fragment instanceof CurrentRequestFragment){
+        if (fragment instanceof CurrentRequestFragment) {
             getSupportActionBar().setTitle("Current Request");
             mCurrentNavPosition = 1;
         }
-        if(fragment instanceof CreateRequestFragment){
+        if (fragment instanceof CreateRequestFragment) {
             getSupportActionBar().setTitle("Create Request");
             mCurrentNavPosition = 1;
         }
-        if(fragment instanceof SearchDonarFragment){
+        if (fragment instanceof SearchDonarFragment) {
             searchDonorReloaded = !searchDonorReloaded;
             getSupportActionBar().setTitle("Search Donors");
             mCurrentNavPosition = 3;
 
         }
-        if(fragment instanceof ResponseFragment){
+        if (fragment instanceof ResponseFragment) {
             getSupportActionBar().setTitle("Responses");
             mCurrentNavPosition = 2;
         }
-        if(fragment instanceof UpdateProfileFragment){
+        if (fragment instanceof UpdateProfileFragment) {
             getSupportActionBar().setTitle("Update Profile");
             mCurrentNavPosition = 4;
         }
-        if(fragment instanceof FeedBackFragment){
-             getSupportActionBar().setTitle("FeedBack Please");
-             mCurrentNavPosition = 6;
+        if (fragment instanceof FeedBackFragment) {
+            getSupportActionBar().setTitle("FeedBack Please");
+            mCurrentNavPosition = 6;
         }
-        if(fragment instanceof MapContainerFragment){
-
-              getSupportActionBar().setTitle("Surrounding Donars");
-              mCurrentNavPosition = 7;
+        if (fragment instanceof MapContainerFragment) {
+            getSupportActionBar().setTitle("Surrounding Donars");
+            mCurrentNavPosition = 7;
+        }
+        if (fragment instanceof RecipientDetailsFragment) {
+            getSupportActionBar().setTitle("Recipient Info");
+            mCurrentNavPosition = 0;
         }
         mNavigationView.getMenu().getItem(mCurrentNavPosition).setChecked(true);
     }
@@ -330,14 +334,12 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
     }
 
     private void setNavigationDrawerItems(String memberType) {
-
-       if(memberType.equals("Member")){
-           mNavigationView.getMenu().findItem(R.id.current_request_fragment).setVisible(false);
-           mNavigationView.getMenu().findItem(R.id.create_request_fragment).setVisible(false);
-           mNavigationView.getMenu().findItem(R.id.view_response_fragment).setVisible(false);
-           mNavigationView.getMenu().findItem(R.id.view_donors_fragment).setVisible(false);
-           mNavigationView.getMenu().findItem(R.id.donarLocation).setVisible(false);
-       }
+        if (memberType.equals("Member")) {
+            mNavigationView.getMenu().findItem(R.id.current_request_fragment).setVisible(false);
+            mNavigationView.getMenu().findItem(R.id.create_request_fragment).setVisible(false);
+            mNavigationView.getMenu().findItem(R.id.view_response_fragment).setVisible(false);
+            mNavigationView.getMenu().findItem(R.id.view_donors_fragment).setVisible(false);
+        }
 
     }
 

@@ -20,7 +20,7 @@ public interface UserApi {
     Call<Donor> login(@Field("mobile") String username, @Field("password") String password);
 
     @POST("/Doner/Register")
-    Call<ResponseBody> register(@Body Donor donor);
+    Call<Void> register(@Body Donor donor);
 
     @GET("/logout")
     Call<Void> logout();

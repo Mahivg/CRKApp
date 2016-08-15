@@ -31,8 +31,8 @@ public interface BloodDonationApi {
 
     @POST("/donation-requests/{donation_request_id}/donate")
     @FormUrlEncoded
-    Call<Void> verifyDonationRequest(@Path("donation_request_id") String bloodRequestId,
-                                     @Field("donor_id") String donorId);
+    Call<Void> donate(@Path("donation_request_id") String bloodRequestId,
+                      @Field("donor_id") String donorId);
 
     @DELETE("/donation-requests/{donation_request_id}")
     Call<Void> deleteDonationRequest(@Path("donation_request_id") String bloodRequestId);

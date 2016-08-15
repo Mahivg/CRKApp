@@ -1,14 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/bloodrequest_recycler_view"
+    <data>
+
+        <variable
+            name="bloodRequests"
+            type="java.util.List" />
+
+        <variable
+            name="listItemView"
+            type="me.tatarka.bindingcollectionadapter.ItemView" />
+
+        <variable
+            name="homeFragment"
+            type="com.auidbook.prototype.HomeFragment" />
+
+        <variable
+            name="isError"
+            type="boolean" />
+
+        <variable
+            name="isEmpty"
+            type="boolean" />
+
+        <variable
+            name="isLoading"
+            type="boolean" />
+
+        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        />
+        android:layout_height="wrap_content">
 
-</RelativeLayout>
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundGravity="center"
+            android:indeterminate="true"
+            style="@android:style/Widget.ProgressBar.Large"
+            android:visibility="@{isLoading ? View.VISIBLE : View.GONE}" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/bloodrequest_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:visibility="@{!isError &amp;&amp; !isEmpty &amp;&amp; !isLoading ? View.VISIBLE : View.GONE}"
+            app:adapter='@{"com.auidbook.prototype.BloodRequestListAdapter"}'
+            app:hasFixedSize="@{true}"
+            app:itemView="@{listItemView}"
+            app:items="@{bloodRequests}"
+            app:layoutManager="@{LayoutManagers.linear()}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{isEmpty ? View.VISIBLE : View.GONE}">
+
+            <ImageView
+                android:layout_width="180sp"
+                android:layout_height="180sp"
+                android:alpha="0.7"
+                android:contentDescription="@string/chennai_red_knights"
+                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:gravity="center"
+                android:text="@string/empty_blood_requests"
+                android:textColor="?android:attr/textColorHint"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="@{isError ? View.VISIBLE : View.GONE}">
+
+            <ImageView
+                android:layout_width="180sp"
+                android:layout_height="180sp"
+                android:alpha="0.3"
+                android:contentDescription="@string/error"
+                android:src="@drawable/exclamation_mark"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.75"
+                android:gravity="center"
+                android:text="@string/network_error_message"
+                android:textColor="?android:attr/textColorHint"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/retry"
+                android:textColor="?android:attr/textColorHint"
+                android:onClick="@{homeFragment::onRetryButtonClick}" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

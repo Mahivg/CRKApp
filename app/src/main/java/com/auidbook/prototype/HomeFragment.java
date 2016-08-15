@@ -1,182 +1,80 @@
 package com.auidbook.prototype;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.auidbook.prototype.Model.BloodRequest;
-import com.auidbook.prototype.Model.CRKApp;
-import com.auidbook.prototype.Model.DataStorage.DataStore;
-import com.auidbook.prototype.Model.Donor;
-import com.auidbook.prototype.Model.DonorHelper;
+import com.auidbook.prototype.databinding.FragmentHomeBinding;
+import com.auidbook.prototype.util.RetrofitUtils;
 
-import java.io.InputStream;
 import java.util.List;
 
-/**
- * Created by Rawoof on 5/8/2016.
- */
+import me.tatarka.bindingcollectionadapter.ItemView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class HomeFragment extends Fragment {
 
-    private DataStore dataStore;
-    private Donor donor;
-    private CRKApp crkApp;
-    private DonorHelper donorHelper;
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private List<BloodRequest> bloodList;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        crkApp = (CRKApp) getActivity().getApplicationContext();
-
-        donor = crkApp.getDonor();
-
-        donorHelper = crkApp.getDonorHelper();
-
-        //System.out.println("BloodList Size :  "+donorHelper.getAllBloodRequest().size());
-
-        dataStore = DataStore.getDataStore(getActivity());
-    }
+    private FragmentHomeBinding homeFragmentDataBinding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
-
-        initViews(v);
-
-        return v;
-
+        homeFragmentDataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        homeFragmentDataBinding.setVariable(com.auidbook.prototype.BR.listItemView, ItemView.of(com.auidbook.prototype.BR.bloodRequest, R.layout.request_card_view));
+        homeFragmentDataBinding.setIsError(false);
+        homeFragmentDataBinding.setIsEmpty(false);
+        homeFragmentDataBinding.setIsLoading(true);
+        homeFragmentDataBinding.executePendingBindings();
+        return homeFragmentDataBinding.getRoot();
     }
-
-    private void initViews(View v) {
-
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.bloodrequest_recycler_view);
-
-        mRecyclerView.setHasFixedSize(true);
-
-        bloodList = donorHelper.getApprovedBloodRequestList();
-
-        mAdapter = new MyCardViewAdapter(bloodList);
-
-        mLayoutManager = new LinearLayoutManager(getContext());
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-
 
     @Override
-    public void onDetach() {
-
-        super.onDetach();
-        System.out.println(" Home Fragment OnDetach Is called ");
-
-        crkApp.setDonorHelper(donorHelper);
-        crkApp.setDonor(donor);
+    public void onStart() {
+        super.onStart();
+        fetchBloodRequests();
     }
 
-
-    public class MyCardViewAdapter extends RecyclerView.Adapter<MyCardViewAdapter.MyViewHolder>{
-
-        private List<BloodRequest> bloodRequestList;
-        private int mPosition;
-
-        public MyCardViewAdapter(List<BloodRequest> bloodRequestList) {
-
-            this.bloodRequestList = bloodRequestList;
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            View cardView = LayoutInflater.from(parent.getContext()).inflate(R.layout.request_card_view,parent,false);
-
-            MyViewHolder viewHolder = new MyViewHolder(cardView);
-
-            return  viewHolder;
-        }
-        @Override
-        public void onBindViewHolder(MyViewHolder holder, final int position) {
-
-            mPosition = position-1;
-
-            holder.txt_requester_name.setText((bloodRequestList.get(position).getPatientName()));
-
-            holder.txt_blood_unit.setText(bloodRequestList.get(position).getNumberOfUnits()+" Units Required");
-
-            holder.txt_hospital.setText(bloodRequestList.get(position).getLocality());
-
-            InputStream is = dataStore.getBloodImageInputStream("O+ve");
-
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
-
-            holder.image_blood_group.setImageBitmap(bitmap);
-
-            holder.btn_donate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    bloodRequestList.get(position).getDonorResponsed().add(donor);
-
-//                    donor.setIsRequestAccepted(true);
-//                    donorHelper.getDonorByUserName(donor.getMobileNumber()).setIsRequestAccepted(true);
-
-                    getActivity().finish();
-                    startActivity(getActivity().getIntent());
-                   // Toast.makeText(getActivity(), "Clicked On position : "+ position, Toast.LENGTH_SHORT).show();
+    public void fetchBloodRequests() {
+        homeFragmentDataBinding.setIsError(false);
+        homeFragmentDataBinding.setIsEmpty(false);
+        homeFragmentDataBinding.setIsLoading(true);
+        homeFragmentDataBinding.executePendingBindings();
+        RetrofitUtils.getBloodDonationApi().getAllBloodRequests().enqueue(new Callback<List<BloodRequest>>() {
+            @Override
+            public void onResponse(Call<List<BloodRequest>> call, Response<List<BloodRequest>> response) {
+                homeFragmentDataBinding.setIsLoading(false);
+                if (response.isSuccessful()) {
+                    List<BloodRequest> bloodRequests = response.body();
+                    homeFragmentDataBinding.setBloodRequests(bloodRequests);
+                    homeFragmentDataBinding.setIsError(false);
+                    homeFragmentDataBinding.setIsEmpty(bloodRequests.isEmpty());
+                    homeFragmentDataBinding.executePendingBindings();
+                } else {
+                    homeFragmentDataBinding.setIsError(true);
+                    homeFragmentDataBinding.setIsEmpty(false);
+                    Log.e(HomeFragment.class.getName(), response.message());
                 }
-            });
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return bloodRequestList.size();
-        }
-
-        public class MyViewHolder extends RecyclerView.ViewHolder{
-
-            private TextView txt_requester_name;
-            private ImageView image_blood_group;
-            private TextView txt_blood_unit;
-            private TextView txt_hospital;
-            private Button btn_donate;
-
-            public MyViewHolder(View itemView) {
-                super(itemView);
-
-                txt_requester_name = (TextView) itemView.findViewById(R.id.txt_requester_name);
-
-                image_blood_group = (ImageView) itemView.findViewById(R.id.image_blood_group);
-
-                txt_blood_unit= (TextView) itemView.findViewById(R.id.txt_blood_unit);
-
-                txt_hospital= (TextView) itemView.findViewById(R.id.txt_hospital);
-
-                btn_donate= (Button) itemView.findViewById(R.id.btn_donate);
             }
 
-        }
+            @Override
+            public void onFailure(Call<List<BloodRequest>> call, Throwable t) {
+                Log.e(HomeFragment.class.getName(), t.getMessage(), t);
+                homeFragmentDataBinding.setIsEmpty(false);
+                homeFragmentDataBinding.setIsLoading(false);
+                homeFragmentDataBinding.setIsError(true);
+            }
+        });
+    }
+
+    public void onRetryButtonClick(View v) {
+        fetchBloodRequests();
     }
 }

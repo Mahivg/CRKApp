@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import com.auidbook.prototype.BuildConfig;
 import com.auidbook.prototype.api.BloodDonationApi;
 import com.auidbook.prototype.api.UserApi;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.Authenticator;
 import okhttp3.OkHttpClient;
@@ -19,11 +21,13 @@ public class RetrofitUtils {
 
     @NonNull
     private static Retrofit createRetrofit() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return new Retrofit
                 .Builder()
                 .client(new OkHttpClient.Builder().build())
                 .baseUrl(BuildConfig.BASE_URL)
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
     }
 

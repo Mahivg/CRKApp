@@ -23,15 +23,14 @@ import com.auidbook.prototype.Model.CRKApp;
 import com.auidbook.prototype.Model.DataStorage.SessionManager;
 import com.auidbook.prototype.Model.Donor;
 import com.auidbook.prototype.Model.DonorHelper;
+import com.auidbook.prototype.Model.Function;
 import com.auidbook.prototype.handler.BloodRequestHandler;
 import com.auidbook.prototype.listener.ICommunicator;
 
-import java.io.IOException;
-import java.security.DomainCombiner;
 import java.util.HashMap;
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,ICommunicator {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, ICommunicator {
 
     private DonorHelper donorHelper;
     private BloodRequestHandler bloodRequestHandler;
@@ -73,68 +72,58 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 isLoggedIn = isChecked;
             }
         });
-        signUp=(TextView)findViewById(R.id.signup1);
+        signUp = (TextView) findViewById(R.id.signup1);
         signUp.setOnClickListener(this);
-        loginButton=  (Button)findViewById(R.id.email_sign_in_button);
+        loginButton = (Button) findViewById(R.id.email_sign_in_button);
         loginButton.setOnClickListener(this);
 
-        if(isRemembered){
-            HashMap<String,String> userCredentials = sessionManager.getUserDetails();
+        if (isRemembered) {
+            HashMap<String, String> userCredentials = sessionManager.getUserDetails();
             edtMobileNumber.setText(userCredentials.get(SessionManager.KEY_USER_NAME));
             edtPassword.setText(userCredentials.get(SessionManager.KEY_PASSWORD));
         }
 
-        Window window=this.getWindow();
+        Window window = this.getWindow();
         window.setStatusBarColor(Color.WHITE);
     }
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==loginButton.getId()) {
-
+        if (view.getId() == loginButton.getId()) {
             loginUser();
-
-        }
-        else if(view.getId()==signUp.getId()){
-            Intent i= new Intent(getApplicationContext(),RegisterActivity.class);
+        } else if (view.getId() == signUp.getId()) {
+            Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(i);
             setContentView(R.layout.activity_register);
         }
     }
 
-    private void loginUser() throws IOException {
+    private void loginUser() {
 
-        String userName =  edtMobileNumber.getText().toString();
-        String password = edtPassword.getText().toString();
-
-        boolean isValidUser = donorHelper.checkValidUser(userName,password);
-
-        if (userName.trim().length() > 0 || password.trim().length() > 0) {
-            if (userName.trim().length() > 0) {
-                if (password.trim().length() > 0) {
-                    if (isValidUser) {
-
-                        if (isLoggedIn) {
-                            sessionManager.createLoginSession(userName, password);
-                        }
-                        crkApp.setDonor(donorHelper.getDonorByUserName(userName));
-                        crkApp.setDonorHelper(donorHelper);
-                       // bloodRequestHandler.getAllBloodRequest();
-                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(i);
-                    } else {
-                        Toast.makeText(this, "Invalid UserName Password", Toast.LENGTH_SHORT).show();
-                    }
+        final String userName = edtMobileNumber.getText().toString();
+        final String password = edtPassword.getText().toString();
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please Enter UserName", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Please Enter Password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        donorHelper.checkValidUser(userName, password, new Function<Donor>() {
+            @Override
+            public void apply(Donor arg) {
+                if (arg != null) {
+                    sessionManager.createLoginSession(userName, password);
+                    crkApp.setDonor(donorHelper.getDonorByUserName(userName));
+                    crkApp.setDonorHelper(donorHelper);
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
                 } else {
-                    Toast.makeText(this, "Please Enter Password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Invalid UserName Password", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(this, "Please Enter UserName", Toast.LENGTH_SHORT).show();
             }
-        }
-        else{
-            Toast.makeText(this, "Please Enter UserName & Password", Toast.LENGTH_SHORT).show();
-        }
+        });
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -175,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.i("Login Activity", "setBloodRequestCalled");
         donorHelper.setAllBloodRequest(requestBloodList);
         crkApp.setDonorHelper(donorHelper);
-        Intent i = new Intent(this,MainActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
 
     }

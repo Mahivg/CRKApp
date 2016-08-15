@@ -5,15 +5,16 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
-
-app.use(logger('dev', {immediate: true}));
+var util = require("util");
+app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/login', function(req, res) {
-  if (req.params.mobile === "123" && req.params.password === "dev") {
+  console.log(util.inspect(req, false, null));
+  if (req.body.mobile === "123" && req.body.password === "dev") {
     res.json({"auth_token":"aldjflakdsjfklasdjlfkasjd","name":"Vignesh","mobile_number":"9838383838","gender":"Male","blood_group":"O +ve","work_location":"CHennai","home_location":"Chennai","user_role":"donor/organizer"});
   } else {
     res.status(403).end();
@@ -22,7 +23,7 @@ app.post('/login', function(req, res) {
 
 
 app.post("/Doner/Register", function(req, res) {
-  if (req.body.name=== "Vignesh") {
+  if (req.body.firstname=== "Vignesh") {
     res
     .status(200)
     .json({"auth_token":"aldjflakdsjfklasdjlfkasjd","name":"Vignesh","mobile_number":"9838383838","gender":"Male","blood_group":"O +ve","work_location":"CHennai","home_location":"Chennai","user_role":"donor/organizer"})
@@ -41,7 +42,7 @@ app.post("/user/:mobile_number", function(req, res) {
 });
 
 app.get("/donation-requests", function (req, res) {
-  res.json([{"donation_request_id":"some_unique_id_1","blood_group":"O+ve","patient_name":"Mani","Attender_name":"Gani","mobile_number":"42323232323","alternate_mobile_number":"434534343343","gender":"male","hospital_name":"Egmore Govt hospital","number_of_units":4,"cause":"cancer fighting patient","required_date":"2015-JUL-20","required_time":"13:10:00","is_verified":true,"organizer_id":"23222366564"},{"donation_request_id":"some_unique_id_2","blood_group":"O+ve","patient_name":"Mani","Attender_name":"Gani","mobile_number":"42323232323","alternate_mobile_number":"434534343343","gender":"male","hospital_name":"Egmore Govt hospital","number_of_units":4,"cause":"cancer fighting patient","required_date":"2015-JUL-20","required_time":"13:10:00","is_verified":false,"organizer_id":"2323244223233"}]);
+  res.json([{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani1","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 1","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani2","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 2","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani3","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 3","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani4","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 4","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani5","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 5","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani6","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 6","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_1","bloodgroup":"O +ve","pat_name":"Mani7","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 7","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"},{"request_id":"some_unique_id_2","bloodgroup":"O +ve","pat_name":"Mani8","age":30,"date":"2015-07-20","time":"12:23","number_of_units":12.3,"mobileno":"23232322323","location":"Chennai","hospital":"Egmore Govt hospital 8","address":"24, RH Street, Royapettah","city":"Chennai","state":"Tamil nadu","status":"Pending"}]);
 })
 
 app.post("/donation-requests", function (req, res) {

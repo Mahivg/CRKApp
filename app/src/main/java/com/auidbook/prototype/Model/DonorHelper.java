@@ -3,8 +3,14 @@ package com.auidbook.prototype.Model;
 import android.content.Context;
 import android.util.Log;
 
+import com.auidbook.prototype.util.RetrofitUtils;
+
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DonorHelper {
 
@@ -17,7 +23,7 @@ public class DonorHelper {
     }
 
     public DonorHelper(Context context) {
-        crkApp = (CRKApp) context;
+//        crkApp = (CRKApp) context;
     }
 
     public List<BloodRequest> getAllBloodRequest() {
@@ -30,32 +36,48 @@ public class DonorHelper {
 
     }
 
-    public List<Donor> getAllDonor(){
+    public List<Donor> getAllDonor() {
         return Collections.emptyList();
     }
 
-    public Donor getDonor(){
-        if(DonorHelper.donor == null) {
+    public Donor getDonor() {
+        if (DonorHelper.donor == null) {
             DonorHelper.donor = getAllDonor().get(0);
         }
         return DonorHelper.donor;
     }
 
-    public void setDonor(Donor donor){
+    public void setDonor(Donor donor) {
 
-        DonorHelper.donor  = donor;
+        DonorHelper.donor = donor;
     }
 
-    public List<BloodRequest> getApprovedBloodRequestList(){
-        return  Collections.emptyList();
+    public List<BloodRequest> getApprovedBloodRequestList() {
+        return Collections.emptyList();
     }
 
 
-    public boolean checkValidUser(String userName, String password){
-        return false;
+    public void checkValidUser(String userName, String password, final Function<Donor> loginResultProcessor) {
+        RetrofitUtils.getUserApi().login(userName, password).enqueue(new Callback<Donor>() {
+            @Override
+            public void onResponse(Call<Donor> call, Response<Donor> response) {
+                if (response.isSuccessful()) {
+                    loginResultProcessor.apply(response.body());
+                } else {
+                    Log.e(DonorHelper.class.getName(), "Response status: " + response.code() + " message: " + response.message());
+                    loginResultProcessor.apply(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Donor> call, Throwable t) {
+                Log.e(DonorHelper.class.getName(), t.getMessage(), t);
+                loginResultProcessor.apply(null);
+            }
+        });
     }
 
-    public Donor getDonorByUserName(String userName){
+    public Donor getDonorByUserName(String userName) {
         return null;
     }
 

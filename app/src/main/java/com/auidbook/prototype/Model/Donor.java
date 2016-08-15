@@ -35,4 +35,6 @@ public class Donor {
     private Double longitude;
     @JsonProperty("date")
     private Date dateOfBirth;
+    @JsonProperty("last_donation_date")
+    private Date lastDonationDate;
 }
