@@ -40,6 +40,7 @@ public class BloodRequestListAdapter extends BindingRecyclerViewAdapter<BloodReq
         bloodDonateActivityIntent.setClass(v.getContext(), MainActivity.class);
         bloodDonateActivityIntent.setAction(Constants.VIEW_REQUEST_DETAILS_ACTION);
         bloodDonateActivityIntent.putExtra(Constants.BLOOD_REQUEST_KEY, bloodRequest);
+        bloodDonateActivityIntent.putExtra(Constants.IS_VIEW_REQUEST_DETAILS, true);
         v.getContext().startActivity(bloodDonateActivityIntent);
     }
 

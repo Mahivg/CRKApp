@@ -46,7 +46,7 @@ app.get("/donation-requests", function (req, res) {
 })
 
 app.post("/donation-requests", function (req, res) {
-  if (req.body.patient_name=== "Mani") {
+  if (req.body.pat_name=== "Mani") {
     res.status(200).end();
   } else {
     res.status(400).end();

@@ -61,7 +61,7 @@
     <string name="chennai_red_knights">Chennai Red Knights</string>
     <string name="email">Email</string>
     <string name="home_location">Home Location</string>
-    <string name="gender">Gender:</string>
+    <string name="gender">Gender</string>
     <string name="date_of_birth">Date of birth</string>
     <string name="sign_up">Sign Up</string>
     <string name="first_name">First name</string>
@@ -83,6 +83,22 @@
     <string name="time">Time</string>
     <string name="city">City</string>
     <string name="i_donate">I Donate</string>
+    <string name="units">Units</string>
+    <string name="reason">Reason</string>
+    <string name="alternate_number">Alternate Number</string>
+    <string name="hospital_details">Hospital Details</string>
+    <string name="address_line_1">Address Line 1</string>
+    <string name="address_line_2">Address Line 2</string>
+    <string name="address_line_3">Address Line 3</string>
+    <string name="submit">Submit</string>
+    <string name="error_patient_name">Please enter the patient\'s name</string>
+    <string name="error_donation_date">Please choose the donation date</string>
+    <string name="error_mobile_number">Please enter your contact number</string>
+    <string name="error_alternate_mobile_number">Please enter an alternate contact number</string>
+    <string name="error_hospital_address">Please enter the hospital address</string>
+    <string name="error_number_of_units">Please enter a value more than 0.5</string>
+    <string name="error_gender">Please select your gender</string>
+    <string name="error_blood_group">Please select your blood group</string>
 
     <plurals name="unit">
         <item quantity="one">unit</item>

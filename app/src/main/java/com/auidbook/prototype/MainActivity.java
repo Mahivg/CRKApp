@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -122,12 +121,21 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (intent == null) {
+            return;
+        }
         switch (intent.getAction()) {
             case Constants.VIEW_REQUEST_DETAILS_ACTION:
-                RecipientDetailsFragment recipientDetailsFragment = new RecipientDetailsFragment();
-                recipientDetailsFragment.setArguments(intent.getExtras());
-                replaceNavigationFragment(recipientDetailsFragment);
-
+                RequestDetailsFragment bloodRequestDetailsFragment = new RequestDetailsFragment();
+                bloodRequestDetailsFragment.setArguments(intent.getExtras());
+                replaceNavigationFragment(bloodRequestDetailsFragment);
+                break;
+            case Constants.ACCEPT_DONATION_ACTION:
+                replaceNavigationFragment(new AcceptDonationFragment());
+                break;
+            case Constants.LIST_PENDING_REQUESTS:
+                replaceNavigationFragment(new HomeFragment());
+                break;
         }
     }
 
@@ -144,7 +152,9 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
                 break;
             case R.id.create_request_fragment:
 
-                replaceNavigationFragment(new CreateRequestFragment());
+                RequestDetailsFragment fragment = new RequestDetailsFragment();
+                fragment.setArguments(new Bundle());
+                replaceNavigationFragment(fragment);
 
                 break;
             case R.id.view_response_fragment:
@@ -277,10 +287,10 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
 
     protected boolean replaceNavigationFragment(Fragment fragment) {
         setNavbarTitle(fragment);
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container_fragment_layout, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container_fragment_layout, fragment)
+                .addToBackStack(null)
+                .commit();
         return true;
     }
 
@@ -295,7 +305,7 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
             getSupportActionBar().setTitle("Current Request");
             mCurrentNavPosition = 1;
         }
-        if (fragment instanceof CreateRequestFragment) {
+        if (fragment instanceof RequestDetailsFragment) {
             getSupportActionBar().setTitle("Create Request");
             mCurrentNavPosition = 1;
         }
@@ -321,8 +331,8 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
             getSupportActionBar().setTitle("Surrounding Donars");
             mCurrentNavPosition = 7;
         }
-        if (fragment instanceof RecipientDetailsFragment) {
-            getSupportActionBar().setTitle("Recipient Info");
+        if (fragment instanceof RequestDetailsFragment) {
+            getSupportActionBar().setTitle("Patient details");
             mCurrentNavPosition = 0;
         }
         mNavigationView.getMenu().getItem(mCurrentNavPosition).setChecked(true);
@@ -336,7 +346,6 @@ public class MainActivity extends BaseLoggedInUserActivity implements Navigation
     private void setNavigationDrawerItems(String memberType) {
         if (memberType.equals("Member")) {
             mNavigationView.getMenu().findItem(R.id.current_request_fragment).setVisible(false);
-            mNavigationView.getMenu().findItem(R.id.create_request_fragment).setVisible(false);
             mNavigationView.getMenu().findItem(R.id.view_response_fragment).setVisible(false);
             mNavigationView.getMenu().findItem(R.id.view_donors_fragment).setVisible(false);
         }

@@ -35,8 +35,8 @@
             android:paddingEnd="0dp"
             app:ms_enableFloatingLabel="true"
             app:ms_floatingLabelColor="?android:attr/textColorHint"
-            app:ms_floatingLabelText="Blood group"
-            app:ms_hint="Blood group"
+            app:ms_floatingLabelText="@string/blood_group"
+            app:ms_hint="@string/blood_group"
             app:ms_alignLabels="false"
             app:ms_hintColor="?android:attr/textColorHint"
             app:ms_multiline="false" />

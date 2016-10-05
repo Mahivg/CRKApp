@@ -8,8 +8,8 @@ import com.auidbook.prototype.api.UserApi;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import okhttp3.Authenticator;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -25,7 +25,10 @@ public class RetrofitUtils {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return new Retrofit
                 .Builder()
-                .client(new OkHttpClient.Builder().build())
+                .client(new OkHttpClient.Builder()
+                        .addInterceptor(new HttpLoggingInterceptor()
+                                .setLevel(HttpLoggingInterceptor.Level.BODY)
+                        ).build())
                 .baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();

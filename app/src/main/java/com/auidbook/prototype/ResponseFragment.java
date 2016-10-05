@@ -177,9 +177,9 @@ public class ResponseFragment extends Fragment  {
                 else{
                     BloodRequest bloodRequest = requestBloodList.get(mPosition);
 
-                    CreateRequestFragment createRequestFragment = CreateRequestFragment.newInstance(bloodRequest);
-
-                    communicator.changeFragment(createRequestFragment);
+//                    RequestDetailsFragment requestDetailsFragment = RequestDetailsFragment.newInstance(bloodRequest);
+//
+//                    communicator.changeFragment(requestDetailsFragment);
 
                     Toast.makeText(getActivity(), "Goes to edit Response" + mPosition, Toast.LENGTH_SHORT).show();
                 }

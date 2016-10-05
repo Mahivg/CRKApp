@@ -22,6 +22,8 @@ public class BloodRequest implements Parcelable {
     private String requestId;
     @JsonProperty("pat_name")
     private String patientName;
+    @JsonProperty("gender")
+    private String gender;
     @JsonProperty("bloodgroup")
     private BloodGroup bloodGroup;
     @JsonProperty("age")
@@ -36,21 +38,45 @@ public class BloodRequest implements Parcelable {
     private double numberOfUnits;
     @JsonProperty("mobileno")
     private String contactNumber;
+    @JsonProperty("alternate_mobileno")
+    private String alternateContactNumber;
+    @JsonProperty("reason")
+    private String reason;
     @JsonProperty("location")
     private String locality;
     @JsonProperty("hospital")
     private String hospitalName;
     @JsonProperty("address")
-    public String address;
+    private String address;
+    @JsonProperty("address_line_2")
+    private String addressLineTwo;
+    @JsonProperty("address_line_3")
+    private String addressLineThree;
     @JsonProperty("city")
-    public String city;
+    private String city;
     @JsonProperty("state")
-    public String state;
+    private String state;
     @JsonProperty("status")
-    public RequestStatus requestStatus;
+    private RequestStatus requestStatus;
+
+    public String getGender() {
+        return gender;
+    }
 
     public String getRequestId() {
         return this.requestId;
+    }
+
+    public String getAddressLineThree() {
+        return addressLineThree;
+    }
+
+    public String getAddressLineTwo() {
+        return addressLineTwo;
+    }
+
+    public String getReason() {
+        return reason;
     }
 
     public String getPatientName() {
@@ -109,8 +135,8 @@ public class BloodRequest implements Parcelable {
         return this.requestStatus;
     }
 
-    public String getFormattedDonationDate () {
-        return new SimpleDateFormat("EEE, MMM d, yyyy").format(this.donationDate);
+    public String getFormattedDonationDate() {
+        return this.donationDate == null ? null : new SimpleDateFormat("EEE, MMM d, yyyy").format(this.donationDate);
     }
 
     @Override
@@ -170,6 +196,10 @@ public class BloodRequest implements Parcelable {
             return new BloodRequest[size];
         }
     };
+
+    public String getAlternateContactNumber() {
+        return alternateContactNumber;
+    }
 }
 
 
